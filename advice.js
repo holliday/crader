@@ -1,6 +1,6 @@
 'use strict';
 
-var advice = {};
+const advice = {};
 
 const buy_id = {};
 const sell_id = {};

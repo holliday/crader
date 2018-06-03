@@ -3,7 +3,7 @@
 require('./show');
 
 ////////////////////
-var common = {};
+const common = {};
 
 common.banner = () => {
     console.log(yellow(

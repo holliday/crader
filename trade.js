@@ -1,11 +1,11 @@
 'use strict';
 const local_require = module => require(__dirname + '/' + module);
 
-var meow = require('meow');
-var path = require('path');
+const meow = require('meow');
+const path = require('path');
 require('manakin').global; // color console
 
-var common = require('./common');
+const common = require('./common');
 
 ////////////////////
 function read_args() {
