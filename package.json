@@ -10,6 +10,8 @@
   "author": "Doc Holliday <doc (dot) holliday (at) usa (dot) com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "chalk": "^2.4.1"
+    "chalk": "^2.4.1",
+    "manakin": "^0.5.1",
+    "meow": "^5.0.0"
   }
 }
