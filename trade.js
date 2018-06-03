@@ -1,4 +1,5 @@
 'use strict';
+const local_require = module => require(__dirname + '/' + module);
 
 var meow = require('meow');
 var path = require('path');
@@ -41,8 +42,7 @@ function read_conf(paths) {
 
     if(typeof paths !== 'undefined') {
         [].concat(paths).forEach(path => {
-            if(!path.startsWith('.') && !path.startsWith('/')) path = './' + path
-            Object.assign(conf, require(path));
+            Object.assign(conf, local_require('conf/' + path));
         });
     }
 
