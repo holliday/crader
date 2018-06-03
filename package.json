@@ -9,5 +9,7 @@
   },
   "author": "Doc Holliday <doc (dot) holliday (at) usa (dot) com>",
   "license": "GPL-3.0",
-  "dependencies": {}
+  "dependencies": {
+    "chalk": "^2.4.1"
+  }
 }
