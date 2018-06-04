@@ -3,12 +3,31 @@
 const EventEmitter = require('events');
 
 class FeedBase extends EventEmitter {
-    constructor() {
+    constructor(start, end, step, length) {
         super();
+
+        this.start = start;
+        this.end = end;
+        this.step = step;
+        this.length = length;
+
+        this.stop = false;
     }
 
+    async fetch_trades(from, to) {
+        return [];
+    }
+
+    //
+    // Run from 'this.start' to 'this.end' timestamp with 'this.step' interval.
+    // If 'this.start' is undefined, start in live mode.
+    // If 'this.end' is undefined, run in live mode until stopped.
+    //
     async run() {
-        return new Promise();
+        for(var now = typeof this.start === 'undefined' ? Date.now() : this.start;
+            !(this.stop || now > this.end);
+            now = Math.min(now + this.step, Date.now())
+        ) this.emit('trades', await this.fetch_trades(now - this.length, now));
     }
 };
 
