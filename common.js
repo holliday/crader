@@ -2,9 +2,9 @@
 
 require('./show');
 
-////////////////////
 const common = {};
 
+////////////////////
 common.banner = () => {
     console.log(yellow(
 `
@@ -23,6 +23,36 @@ X8888  X888h       ="8888f8888r    us888u.    ^"*8888N    ud8888.  ="8888f8888r
 `
     ));
 };
+
+////////////////////
+// convert string with optional suffix to time period
+// suffix can be one of:
+// s - seconds
+// m - minutes
+// h - hours
+// d - days
+// w - weeks
+// <no suffix> - milliseconds
+common.period = val => {
+    const mult = {
+        s: 1000,
+        m: 60 * 1000,
+        h: 60 * 60 * 1000,
+        d: 24 * 60 * 60 * 1000,
+        w:  7 * 24 * 60 * 60 * 1000,
+    };
+
+    val = String(val);
+    var suffix = val.slice(-1);
+
+    if(suffix in mult)
+        val = parseFloat(val.slice(0, -1)) * mult[suffix];
+    else if('0123456789'.includes(suffix))
+        val = parseFloat(val);
+    else val = NaN;
+
+    return Math.trunc(val);
+}
 
 ////////////////////
 module.exports = common;
