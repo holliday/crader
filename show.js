@@ -1,6 +1,10 @@
 'use strict';
 
 const chalk = require('chalk');
+const moment = require('moment');
+
+////////////////////
+global.date = value => moment(value).format('YYYY-MM-DD HH:mm:ss');
 
 ////////////////////
 // chalk styles
