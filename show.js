@@ -1,7 +1,10 @@
 'use strict';
 
+const _ = require('underscore');
 const chalk = require('chalk');
 const moment = require('moment');
+
+const show = {};
 
 ////////////////////
 global.date = value => moment(value).format('YYYY-MM-DD HH:mm:ss.SSS');
@@ -51,3 +54,45 @@ global.bg_bright_blue    = chalk.bgBlueBright;
 global.bg_bright_magenta = chalk.bgMagentaBright;
 global.bg_bright_cyan    = chalk.bgCyanBright;
 global.bg_bright_white   = chalk.bgWhiteBright;
+
+////////////////////
+const esc = '\u001b[';
+const out = process.stdout;
+
+// cursor
+show.move_up      = n => out.write(esc + (_.isNumber(n) ? n : '') + 'A');
+show.move_down    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'B');
+show.move_forward = n => out.write(esc + (_.isNumber(n) ? n : '') + 'C');
+show.move_back    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'D');
+
+show.move_next_line = n => out.write(esc + (_.isNumber(n) ? n : '') + 'E');
+show.move_prev_line = n => out.write(esc + (_.isNumber(n) ? n : '') + 'F');
+
+show.mote_to = (x, y) => {
+    out.write(esc + (_.isNumber(y) ? y+1 : '') + ';' + (_.isNumber(x) ? x+1 : '') + 'G');
+};
+show.move = (x, y) => {
+    if(x > 0) show.move_forward(x);
+    else if(x < 0) show.move_back(-x);
+
+    if(y > 0) show.move_down(y);
+    else if(y < 0) show.move_up(y);
+};
+
+show.save_pos    = () => out.write(esc + 's');
+show.restore_pos = () => out.write(esc + 'u');
+
+// line
+show.erase_up    = () => out.write(esc + '1J');
+show.erase_down  = () => out.write(esc + '0J');
+show.erase       = () => out.write(esc + '2J');
+
+show.erase_begin = () => out.write(esc + '1K');
+show.erase_end   = () => out.write(esc + '0K');
+show.erase_line  = () => out.write(esc + '2K');
+
+// screen
+show.scroll_up   = n => out.write(esc + (_.isNumber(n) ? n : '') + 'S');
+show.scroll_down = n => out.write(esc + (_.isNumber(n) ? n : '') + 'T');
+
+module.exports = show;
