@@ -55,4 +55,8 @@ common.period = val => {
 }
 
 ////////////////////
+common.sleep_for = interval => new Promise(resolve => setTimeout(resolve, interval));
+common.sleep_until = date => common.sleep_for(date - Date.now());
+
+////////////////////
 module.exports = common;
