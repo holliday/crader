@@ -1,6 +1,6 @@
 'use strict';
 
-const TraderBase = require('./base');
+const TraderBase = root_require('trader/base');
 
 class PaperTrader extends TraderBase {
     constructor(conf) {

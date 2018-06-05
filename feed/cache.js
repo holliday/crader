@@ -1,6 +1,6 @@
 'use strict';
 
-const FeedBase = require('./base');
+const FeedBase = root_require('feed/base');
 
 class CacheFeed extends FeedBase {
     constructor(conf) {

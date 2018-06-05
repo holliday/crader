@@ -1,11 +1,13 @@
 'use strict';
 
+global.root_require = name => require(__dirname + '/' + name);
+
 const _ = require('underscore');
 const meow = require('meow');
 const path = require('path');
 require('manakin').global; // color console
 
-const common = require('./common');
+const common = root_require('common');
 
 ////////////////////
 function read_args() {
@@ -37,7 +39,7 @@ and <conf> is one or more conf files to use.
 }
 
 ////////////////////
-function local_require(type, name) {
+function require_type(type, name) {
     if(_.isUndefined(name)) throw new Error(`Unspecified ${type}`);
     return require('./' + type + '/' + name);
 }
@@ -48,7 +50,7 @@ function read_conf(names) {
 
     if(!_.isUndefined(names)) {
         [].concat(names).forEach(name => {
-            Object.assign(conf, local_require('conf', name));
+            Object.assign(conf, require_type('conf', name));
         });
     }
 
@@ -64,9 +66,9 @@ function read_conf(names) {
     var conf = read_conf(args.input);
     console.log("Merged conf:", conf);
 
-    var feed = local_require('feed', conf.feed)(conf);
-    var strat = local_require('strat', 'base')(conf);
-    var trader = local_require('trader', conf.trader)(conf);
+    var feed = require_type('feed', conf.feed)(conf);
+    var strat = require_type('strat', 'base')(conf);
+    var trader = require_type('trader', conf.trader)(conf);
 
     feed.on('trades', trades => strat.advise(trades));
     strat.on('advice', advice => trader.accept(advice));

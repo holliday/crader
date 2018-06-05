@@ -1,6 +1,6 @@
 'use strict';
 
-require('./show');
+root_require('show');
 
 const common = {};
 

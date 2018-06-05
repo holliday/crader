@@ -3,8 +3,8 @@
 const _ = require('underscore');
 const EventEmitter = require('events');
 
-const advice = require('../advice');
-require('../show');
+const advice = root_require('advice');
+root_require('show');
 
 class StratBase extends EventEmitter {
     constructor(conf) {

@@ -3,9 +3,9 @@
 const _ = require('underscore');
 const binance = require('binance');
 
-const common = require('../common');
-const FeedBase = require('./base');
-require('../show');
+const common = root_require('common');
+const FeedBase = root_require('feed/base');
+root_require('show');
 
 const rate_limit = 1000;
 
