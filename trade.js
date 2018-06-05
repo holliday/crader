@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('underscore');
 const meow = require('meow');
 const path = require('path');
 require('manakin').global; // color console
@@ -37,7 +38,7 @@ and <conf> is one or more conf files to use.
 
 ////////////////////
 function local_require(type, name) {
-    if(typeof name === 'undefined') throw new Error(`Unspecified ${type}`);
+    if(_.isUndefined(name)) throw new Error(`Unspecified ${type}`);
     return require('./' + type + '/' + name);
 }
 
@@ -45,7 +46,7 @@ function local_require(type, name) {
 function read_conf(names) {
     var conf = { };
 
-    if(typeof names !== 'undefined') {
+    if(!_.isUndefined(names)) {
         [].concat(names).forEach(name => {
             Object.assign(conf, local_require('conf', name));
         });
