@@ -10,8 +10,6 @@ class FeedBase extends EventEmitter {
         this.end = end;
         this.step = step;
         this.length = length;
-
-        this.stop = false;
     }
 
     async fetch_trades(from, to) {
@@ -25,7 +23,7 @@ class FeedBase extends EventEmitter {
     //
     async run() {
         for(var now = typeof this.start === 'undefined' ? Date.now() : this.start;
-            !(this.stop || now > this.end);
+            !(now > this.end);
             now = Math.min(now + this.step, Date.now())
         ) this.emit('trades', await this.fetch_trades(now - this.length, now));
     }
