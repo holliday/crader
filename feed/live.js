@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('underscore');
 const binance = require('binance');
 
 const common = require('../common');
@@ -73,8 +74,8 @@ class LiveFeed extends FeedBase {
         });
 
         var symbol = conf.asset + conf.currency;
-        if(typeof symbol === 'undefined' || symbol === '')
-            throw new Error('Unspecified of invalid asset and/or currency');
+        if(_.isUndefined(symbol) || symbol === '')
+            throw new Error('Unspecified or invalid asset and/or currency');
         console.log('Symbol:', bold(symbol));
 
         var frame = common.period(conf.frame);
@@ -86,7 +87,7 @@ class LiveFeed extends FeedBase {
         console.log('Length:', bold(frame), 'x', bold(count));
 
         var end;
-        if(typeof conf.end !== 'undefined') {
+        if(!_.isUndefined(conf.end)) {
             end = Date.parse(conf.end);
             if(isNaN(end)) throw new Error('Invalid end time');
         }
@@ -102,18 +103,18 @@ class LiveFeed extends FeedBase {
                 case 'period':
                     var period = common.period(conf.period);
                     if(isNaN(period)) throw new Error('Invalid period');
-                    start = (typeof end === 'undefined' ?  Date.now() : end) - period;
+                    start = (_.isUndefined(end) ?  Date.now() : end) - period;
                     break;
             }
 
-        if(typeof end !== 'undefined' && typeof start === 'undefined')
+        if(!_.isUndefined(end) && _.isUndefined(start))
             throw new Error('Missing one of start or period');
 
-        if(typeof start !== 'undefined')
+        if(!_.isUndefined(start))
             console.log('Interval:',
                 bold(date(new Date(start))),
                 'to', 
-                bold(typeof end === 'undefined' ? '...' : date(new Date(end)))
+                bold(_.isUndefined(end) ? '...' : date(new Date(end)))
             );
 
         return new LiveFeed(exchange, symbol, frame, count, start, end);
