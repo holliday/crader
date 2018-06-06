@@ -36,7 +36,6 @@ ind.ohlcv = (trades, frame) => {
 ////////////////////
 // tulip indicators
 
-// wrapper
 function wrapper(name, ins, opts = [], outs = []) {
     var data = [];
     tulind.indicators[name].indicator(ins, opts, (err, res) => {
@@ -406,4 +405,5 @@ ind.wma = (series, period) => wrapper('wma', [series], [period]);
 // Zero-Lag Exponential Moving Average
 ind.zlema = (series, period) => wrapper('zlema', [series], [period]);
 
+////////////////////
 module.exports = ind;
