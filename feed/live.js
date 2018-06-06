@@ -22,9 +22,7 @@ class LiveFeed extends FeedBase {
 
     async fetch_trades(from, to) {
         for(;;) {
-            var since = this.trades.length
-                ? this.trades[this.trades.length - 1].timestamp
-                : from;
+            var since = this.trades.length ? _.last(this.trades).timestamp : from;
             if(since > to) break;
 
             for(;;) try {
@@ -52,7 +50,7 @@ class LiveFeed extends FeedBase {
 
             // remove duplicates
             while(this.trades.length
-                && this.trades[this.trades.length - 1].timestamp >= trades[0].timestamp
+                && _.last(this.trades).timestamp >= trades[0].timestamp
             ) this.trades.pop();
 
             this.trades.push(...trades);
