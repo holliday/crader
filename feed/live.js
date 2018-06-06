@@ -10,13 +10,11 @@ root_require('show');
 const rate_limit = 1000;
 
 class LiveFeed extends FeedBase {
-    constructor(exchange, symbol, frame, count, start, end) {
-        super(start, end, rate_limit, frame * count);
+    constructor(exchange, symbol, length, start, end) {
+        super(start, end, rate_limit, length);
 
         this.exchange = exchange;
         this.symbol = symbol;
-        this.frame = frame;
-        this.count = count;
 
         this.trades = [];
         this.next_fetch = Date.now();
@@ -117,7 +115,7 @@ class LiveFeed extends FeedBase {
                 bold(_.isUndefined(end) ? '...' : date(new Date(end)))
             );
 
-        return new LiveFeed(exchange, symbol, frame, count, start, end);
+        return new LiveFeed(exchange, symbol, frame * count, start, end);
     }
 };
 
