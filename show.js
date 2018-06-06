@@ -3,11 +3,15 @@
 const _ = require('underscore');
 const chalk = require('chalk');
 const moment = require('moment');
+const sprintf = require('sprintf-js').sprintf;
 
 const show = {};
 
 ////////////////////
 global.date = value => moment(value).format('YYYY-MM-DD HH:mm:ss.SSS');
+
+////////////////////
+global.fmt = (...args) => sprintf(...args);
 
 ////////////////////
 // chalk styles
