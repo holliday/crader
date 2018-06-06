@@ -8,7 +8,7 @@ root_require('show');
 const strat = {};
 
 strat.init = conf => {
-    this.frame = common.period(conf.frame);
+    this.frame = common.parse_period(conf.frame, 'frame');
 };
 
 strat.advise = trades => {

@@ -74,11 +74,8 @@ class LiveFeed extends FeedBase {
             throw new Error('Unspecified or invalid asset and/or currency');
         console.log('Symbol:', bold(symbol));
 
-        var frame = common.period(conf.frame);
-        if(!(frame >= 1000)) throw new Error('Unspecified or invalid frame');
-
-        var count = parseInt(conf.count);
-        if(!(count >= 1)) throw new Error('Unspecified or invalid count');
+        var frame = common.parse_period(conf.frame, 'frame');
+        var count = common.parse_int(conf.count, 'count');
 
         console.log('Length:', bold(frame), 'x', bold(count));
 
@@ -97,8 +94,7 @@ class LiveFeed extends FeedBase {
                     break;
 
                 case 'period':
-                    var period = common.period(conf.period);
-                    if(isNaN(period)) throw new Error('Invalid period');
+                    var period = common.parse_period(conf.period, 'period');
                     start = (_.isUndefined(end) ?  Date.now() : end) - period;
                     break;
             }

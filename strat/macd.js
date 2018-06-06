@@ -9,22 +9,15 @@ const show = root_require('show');
 
 const strat = {};
 
-function call(parse, value, name) {
-    var n = parse(value);
-    if(isNaN(n)) throw new Error('Unspecified or invalid ' + name);
-
-    return n;
-}
-
 strat.init = conf => {
-    this.frame = common.period(conf.frame);
+    this.frame = common.parse_period(conf.frame, 'frame');
 
-    this.short_period = call(parseInt, conf.short_period, 'long_period');
-    this.long_period = call(parseInt, conf.long_period, 'long_period');
-    this.signal_period = call(parseInt, conf.signal_period, 'signal_period');
+    this.short_period  = common.parse_int(conf.short_period, 'long_period');
+    this.long_period   = common.parse_int(conf.long_period, 'long_period');
+    this.signal_period = common.parse_int(conf.signal_period, 'signal_period');
 
-    this.min_up = call(parseFloat, conf.min_up, 'min_up');
-    this.min_down = -Math.abs(call(parseFloat, conf.min_down, 'min_down'));
+    this.min_up = common.parse_float(conf.min_up, 'min_up');
+    this.min_down = -Math.abs(common.parse_float(conf.min_down, 'min_down'));
 };
 
 function comp_to(value, other) {

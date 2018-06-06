@@ -33,7 +33,7 @@ X8888  X888h       ="8888f8888r    us888u.    ^"*8888N    ud8888.  ="8888f8888r
 // d - days
 // w - weeks
 // <no suffix> - milliseconds
-common.period = val => {
+function parsePeriod(value) {
     const mult = {
         s: 1000,
         m: 60 * 1000,
@@ -42,17 +42,28 @@ common.period = val => {
         w:  7 * 24 * 60 * 60 * 1000,
     };
 
-    val = String(val);
-    var suffix = val.slice(-1);
+    value = String(value);
+    var suffix = value.slice(-1);
 
     if(suffix in mult)
-        val = parseFloat(val.slice(0, -1)) * mult[suffix];
+        value = parseFloat(value.slice(0, -1)) * mult[suffix];
     else if('0123456789'.includes(suffix))
-        val = parseFloat(val);
-    else val = NaN;
+        value = parseFloat(value);
+    else value = NaN;
 
-    return Math.trunc(val);
+    return Math.trunc(value);
 }
+
+function parse(func, value, name) {
+    var num = func(value);
+    if(isNaN(num)) throw new Error('Unspecified or invalid ' + name);
+
+    return num;
+}
+
+common.parse_int = (value, name) => parse(parseInt, value, name);
+common.parse_float = (value, name) => parse(parseFloat, value, name);
+common.parse_period = (value, name) => parse(parsePeriod, value, name);
 
 ////////////////////
 common.sleep_for = interval => new Promise(resolve => setTimeout(resolve, interval));
