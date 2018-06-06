@@ -8,12 +8,23 @@ const sprintf = require('sprintf-js').sprintf;
 const show = {};
 
 ////////////////////
-global.as_date = (value, frac) => moment(value).format(
-    'YYYY-MM-DD HH:mm:ss' + (frac ? '.SSS' : '')
-);
+function _fmt(value, mod, width) { return sprintf('%' + mod + width, value); }
 
-////////////////////
-global.fmt = (...args) => sprintf(...args);
+global.as_date = (value, mod = '') => !isNaN(new Date(value))
+    ? moment(value).format('YYYY-MM-DD HH:mm:ss' + mod)
+    : _fmt(value, mod, '19s');
+
+global.as_price = (value, mod = '') =>
+    _fmt(value, mod, _.isNumber(value) ?  '8.7g' :  '8s');
+
+global.as_vol   = (value, mod = '') =>
+    _fmt(value, mod, _.isNumber(value) ? '10.9g' : '10s');
+
+global.as_num   = (value, mod = '') =>
+    _fmt(value, mod, _.isNumber(value) ?  '7.4g' :  '7s');
+
+global.as_fixed = (value, mod = '') =>
+    _fmt(value, mod, _.isNumber(value) ?  '8.4f' :  '8s');
 
 ////////////////////
 // chalk styles
