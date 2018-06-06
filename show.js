@@ -69,12 +69,13 @@ show.move_down    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'B');
 show.move_forward = n => out.write(esc + (_.isNumber(n) ? n : '') + 'C');
 show.move_back    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'D');
 
-show.move_next_line = n => out.write(esc + (_.isNumber(n) ? n : '') + 'E');
-show.move_prev_line = n => out.write(esc + (_.isNumber(n) ? n : '') + 'F');
+show.move_next    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'E');
+show.move_prev    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'F');
 
-show.mote_to = (x, y) => {
-    out.write(esc + (_.isNumber(y) ? y+1 : '') + ';' + (_.isNumber(x) ? x+1 : '') + 'G');
+show.move_to = (x, y) => {
+    out.write(esc + (_.isNumber(y) ? y+1 : '') + ';' + (_.isNumber(x) ? x+1 : '') + 'H');
 };
+
 show.move = (x, y) => {
     if(x > 0) show.move_forward(x);
     else if(x < 0) show.move_back(-x);
@@ -86,11 +87,12 @@ show.move = (x, y) => {
 show.save_pos    = () => out.write(esc + 's');
 show.restore_pos = () => out.write(esc + 'u');
 
-// line
+// screen
 show.erase_up    = () => out.write(esc + '1J');
 show.erase_down  = () => out.write(esc + '0J');
-show.erase       = () => out.write(esc + '2J');
+show.erase_all   = () => out.write(esc + '2J');
 
+// line
 show.erase_begin = () => out.write(esc + '1K');
 show.erase_end   = () => out.write(esc + '0K');
 show.erase_line  = () => out.write(esc + '2K');
