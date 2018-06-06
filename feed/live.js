@@ -61,7 +61,7 @@ class LiveFeed extends FeedBase {
     }
 
     static create(conf) {
-        console.log('Creating live feed');
+        console.log('Creating', bold('live'), 'feed');
 
         console.log('Creating exchange');
         var exchange = new binance.BinanceRest({
