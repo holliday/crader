@@ -2,8 +2,9 @@
 
 const advice = {};
 
-const buy_type = {};
-const sell_type = {};
+////////////////////
+const buy = 'buy';
+const sell = 'sell';
 
 class Advice {
     constructor(timestamp, price, type) {
@@ -13,22 +14,26 @@ class Advice {
     }
 }
 
+////////////////////
 class BuyAdvice extends Advice {
     constructor(timestamp, price) {
-        super(timestamp, price, buy_type);
+        super(timestamp, price, buy);
     }
 }
 
+////////////////////
 class SellAdvice extends Advice {
     constructor(timestamp, price) {
-        super(timestamp, price, sell_type);
+        super(timestamp, price, sell);
     }
 }
 
+////////////////////
 advice.buy = (timestamp, price) => new BuyAdvice(timestamp, price);
-advice.is_buy = advice => advice instanceof Advice && advice.type === buy_type;
+advice.is_buy = advice => advice instanceof Advice && advice.type === buy;
 
 advice.sell = (timestamp, price) => new SellAdvice(timestamp, price);
-advice.is_sell = advice => advice instanceof Advice && advice.type === sell_type;
+advice.is_sell = advice => advice instanceof Advice && advice.type === sell;
 
+////////////////////
 module.exports = advice;
