@@ -1,7 +1,7 @@
 var conf = {};
 
 // strat name
-conf.strat = '';
+conf.strat = 'noop';
 
 // strat data
 //
@@ -12,7 +12,7 @@ conf.strat = '';
 // be set to needed length of time for past trades.
 //
 conf.frame = '1m';
-conf.count = 60;
+conf.count = 10;
 
 //
 // other strat-related settings

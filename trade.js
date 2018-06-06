@@ -41,7 +41,7 @@ and <conf> is one or more conf files to use.
 ////////////////////
 function require_type(type, name) {
     if(_.isUndefined(name)) throw new Error(`Unspecified ${type}`);
-    return require('./' + type + '/' + name);
+    return root_require(type + '/' + name);
 }
 
 ////////////////////
@@ -67,7 +67,7 @@ function read_conf(names) {
     console.log("Merged conf:", conf);
 
     var feed = require_type('feed', conf.feed)(conf);
-    var strat = require_type('strat', 'base')(conf);
+    var strat = root_require('strat/base')(conf);
     var trader = require_type('trader', conf.trader)(conf);
 
     feed.on('trades', trades => strat.advise(trades));
