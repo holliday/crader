@@ -103,4 +103,5 @@ show.erase_line  = () => out.write(esc + '2K');
 show.scroll_up   = n => out.write(esc + (_.isNumber(n) ? n : '') + 'S');
 show.scroll_down = n => out.write(esc + (_.isNumber(n) ? n : '') + 'T');
 
+////////////////////
 module.exports = show;
