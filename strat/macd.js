@@ -55,17 +55,6 @@ function print_preroll(ohlcv, macd) {
     });
 }
 
-function print_advice(adv) {
-    var color = advice.is_buy(adv) ? bg_green
-              : advice.is_sell(adv) ? bg_red : undefined;
-
-    if(!_.isUndefined(color))
-        console.log(bold('Advice:'),
-            color(adv.type), '@', bold(adv.price),
-            '\n'
-        );
-}
-
 strat.advise = trades => {
     var ohlcv = ind.ohlcv(trades, this.frame);
 
@@ -109,13 +98,13 @@ strat.advise = trades => {
             this.trend = Math.sign(hist);
 
             adv = advice.buy(trade.timestamp, trade.price);
-            print_advice(adv);
+            adv.print();
 
         } else if(hist < this.min_down) {
             this.trend = Math.sign(hist);
 
             adv = advice.sell(trade.timestamp, trade.price);
-            print_advice(adv);
+            adv.print();
         }
     }
 
