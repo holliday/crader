@@ -8,7 +8,9 @@ const sprintf = require('sprintf-js').sprintf;
 const show = {};
 
 ////////////////////
-global.date = value => moment(value).format('YYYY-MM-DD HH:mm:ss.SSS');
+global.date = (value, frac) => moment(value).format(
+    'YYYY-MM-DD HH:mm:ss' + (frac ? '.SSS' : '')
+);
 
 ////////////////////
 global.fmt = (...args) => sprintf(...args);
