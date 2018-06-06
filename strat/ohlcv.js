@@ -11,21 +11,19 @@ strat.init = conf => {
     this.frame = common.period(conf.frame);
 };
 
-function col(amount) { return fmt('%-9.8g', amount); }
-
 strat.advise = trades => {
     var ohlcv = ind.ohlcv(trades, this.frame);
 
     console.log('Received', bold(ohlcv.length), 'OHLCV candles:');
 
-    console.log(gray('Date                    Open      High      Low       Close     Volume'));
+    console.log(gray('Date                    Open    High    Low     Close   Volume'));
     ohlcv.forEach(candle => {
         console.log(blue(date(candle.timestamp)),
-                  col(candle.open),
-            green(col(candle.high)),
-              red(col(candle.low)),
-             bold(col(candle.close)),
-             cyan(col(candle.volume)),
+                  fmt('%-7.6g', candle.open),
+            green(fmt('%-7.6g', candle.high)),
+              red(fmt('%-7.6g', candle.low)),
+             bold(fmt('%-7.6g', candle.close)),
+             cyan(fmt('%-9.8g', candle.volume)),
         );
     });
 
