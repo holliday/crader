@@ -13,7 +13,7 @@ ind.ohlcv = (trades, frame) => {
     var time = trades[0].timestamp;
     if(time % frame) time = (Math.trunc(time / frame) + 1) * frame;
 
-    for(; time <= trades[trades.length - 1].timestamp; time += frame) {
+    for(; time <= _.last(trades).timestamp; time += frame) {
         var candle = trades.filter(trade => trade.timestamp >= time
             && trade.timestamp < (time + frame)
         );
@@ -25,8 +25,8 @@ ind.ohlcv = (trades, frame) => {
             open:      prices[0],
             high:      Math.max(...prices),
             low:       Math.min(...prices),
-            close:     prices[prices.length - 1],
-            volume:    candle.map(e => e.amount).reduce((sum, val) => sum + val),
+            close:     _.last(prices),
+            volume:    candle.map(e => e.quantity).reduce((sum, val) => sum + val),
         });
     }
 
