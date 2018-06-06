@@ -1,5 +1,7 @@
 'use strict';
 
+root_require('show');
+
 const advice = {};
 
 ////////////////////
@@ -11,6 +13,12 @@ class Advice {
         this.timestamp = timestamp;
         this.price = price;
         this.type = type;
+    }
+
+    print() {
+        console.log('Advice:',
+            (this.type == buy ? green : red)(this.type), '@', this.price
+        );
     }
 }
 
