@@ -104,9 +104,9 @@ class LiveFeed extends FeedBase {
 
         if(!_.isUndefined(start))
             console.log('Interval:',
-                bold(date(new Date(start))),
+                bold(as_date(new Date(start))),
                 'to', 
-                bold(_.isUndefined(end) ? '...' : date(new Date(end)))
+                bold(_.isUndefined(end) ? '...' : as_date(new Date(end)))
             );
 
         return new LiveFeed(exchange, symbol, frame * count, start, end);

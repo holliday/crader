@@ -18,7 +18,7 @@ strat.advise = trades => {
 
     console.log(gray('Date                Open    High    Low     Close   Volume'));
     ohlcv.forEach(candle => {
-        console.log(blue(date(candle.timestamp)),
+        console.log(blue(as_date(candle.timestamp)),
                   fmt('%-7.6g', candle.open),
             green(fmt('%-7.6g', candle.high)),
               red(fmt('%-7.6g', candle.low)),

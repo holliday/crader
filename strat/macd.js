@@ -27,7 +27,7 @@ function comp_to(value, other) {
 function print_line(candle, macd1, date_color) {
     var color = comp_to(candle.close, candle.open);
 
-    console.log(date_color(date(candle.timestamp)),
+    console.log(date_color(as_date(candle.timestamp)),
         color(fmt('%-7.6g', candle.open)),
         color(fmt('%-7.6g', candle.high)),
         color(fmt('%-7.6g', candle.low)),
