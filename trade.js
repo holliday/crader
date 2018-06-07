@@ -1,8 +1,8 @@
 'use strict';
 global.root_require = name => require(__dirname + '/' + name);
 
-const meow = require('meow');
 require('manakin').global; // color console
+const meow = require('meow');
 
 const common = root_require('common');
 
