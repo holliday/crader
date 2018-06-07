@@ -12,7 +12,6 @@ conf.short_period = 12;
 conf.long_period = 26;
 conf.signal_period = 9;
 
-// crossover threshold
 conf.min_up = 0.05;
 conf.min_down = 0.03;
 
