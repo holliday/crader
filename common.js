@@ -82,16 +82,16 @@ function parsePeriod(value) {
     return Math.trunc(value);
 }
 
-function parse(func, value, name) {
-    var num = func(value);
+function parse(func, conf, name) {
+    var num = func(conf[name]);
     if(isNaN(num)) throw new Error('Unspecified or invalid ' + name);
 
     return num;
 }
 
-common.parse_int = (value, name) => parse(parseInt, value, name);
-common.parse_float = (value, name) => parse(parseFloat, value, name);
-common.parse_period = (value, name) => parse(parsePeriod, value, name);
+common.parse_int = (conf, name) => parse(parseInt, conf, name);
+common.parse_float = (conf, name) => parse(parseFloat, conf, name);
+common.parse_period = (conf, name) => parse(parsePeriod, conf, name);
 
 ////////////////////
 common.sleep_for = interval => new Promise(resolve => setTimeout(resolve, interval));

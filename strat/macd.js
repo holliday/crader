@@ -10,14 +10,14 @@ root_require('show');
 const strat = {};
 
 strat.init = conf => {
-    this.frame = common.parse_period(conf.frame, 'frame');
+    this.frame = common.parse_period(conf, 'frame');
 
-    this.short_period  = common.parse_int(conf.short_period, 'long_period');
-    this.long_period   = common.parse_int(conf.long_period, 'long_period');
-    this.signal_period = common.parse_int(conf.signal_period, 'signal_period');
+    this.short_period  = common.parse_int(conf, 'short_period');
+    this.long_period   = common.parse_int(conf, 'long_period');
+    this.signal_period = common.parse_int(conf, 'signal_period');
 
-    this.min_up = common.parse_float(conf.min_up, 'min_up');
-    this.min_down = -Math.abs(common.parse_float(conf.min_down, 'min_down'));
+    this.min_up = common.parse_float(conf, 'min_up');
+    this.min_down = -Math.abs(common.parse_float(conf, 'min_down'));
 };
 
 function print_line(candle, macd, color_date) {

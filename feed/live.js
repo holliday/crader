@@ -74,8 +74,8 @@ class LiveFeed extends FeedBase {
             throw new Error('Unspecified or invalid asset and/or currency');
         console.log('Symbol:', bold(symbol));
 
-        var frame = common.parse_period(conf.frame, 'frame');
-        var count = common.parse_int(conf.count, 'count');
+        var frame = common.parse_period(conf, 'frame');
+        var count = common.parse_int(conf, 'count');
 
         console.log('Length:', bold(frame), 'x', bold(count));
 
@@ -94,7 +94,7 @@ class LiveFeed extends FeedBase {
                     break;
 
                 case 'period':
-                    var period = common.parse_period(conf.period, 'period');
+                    var period = common.parse_period(conf, 'period');
                     start = (_.isUndefined(end) ?  Date.now() : end) - period;
                     break;
             }
