@@ -93,6 +93,13 @@ common.parse_int = (conf, name) => parse(parseInt, conf, name);
 common.parse_float = (conf, name) => parse(parseFloat, conf, name);
 common.parse_period = (conf, name) => parse(parsePeriod, conf, name);
 
+common.parse_text = (conf, name) => {
+    var text = conf[name];
+    if(_.isUndefined(text)) throw new Error('Unspecified ' + name);
+
+    return text;
+};
+
 ////////////////////
 common.sleep_for = interval => new Promise(resolve => setTimeout(resolve, interval));
 common.sleep_until = date => common.sleep_for(date - Date.now());
