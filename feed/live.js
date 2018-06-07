@@ -82,7 +82,7 @@ class LiveFeed extends FeedBase {
 
         var end;
         if(!_.isUndefined(conf.end)) {
-            end = Date.parse(conf.end);
+            end = (new Date(conf.end)).getTime();
             if(isNaN(end)) throw new Error('Invalid end time');
         }
 
@@ -90,7 +90,7 @@ class LiveFeed extends FeedBase {
         for(var name in conf)
             switch(name) {
                 case 'start':
-                    start = Date.parse(conf.start);
+                    start = (new Date(conf.start)).getTime();
                     if(isNaN(start)) throw new Error('Invalid start time');
                     break;
 
