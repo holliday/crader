@@ -77,42 +77,42 @@ const esc = '\u001b[';
 const out = process.stdout;
 
 // cursor
-show.move_up      = n => out.write(esc + (_.isNumber(n) ? n : '') + 'A');
-show.move_down    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'B');
-show.move_forward = n => out.write(esc + (_.isNumber(n) ? n : '') + 'C');
-show.move_back    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'D');
+global.move_up      = n => out.write(esc + (_.isNumber(n) ? n : '') + 'A');
+global.move_down    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'B');
+global.move_forward = n => out.write(esc + (_.isNumber(n) ? n : '') + 'C');
+global.move_back    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'D');
 
-show.move_next    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'E');
-show.move_prev    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'F');
+global.move_next    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'E');
+global.move_prev    = n => out.write(esc + (_.isNumber(n) ? n : '') + 'F');
 
-show.move_to = (x, y) => {
+global.move_to = (x, y) => {
     out.write(esc + (_.isNumber(y) ? y+1 : '') + ';' + (_.isNumber(x) ? x+1 : '') + 'H');
 };
 
-show.move = (x, y) => {
-    if(x > 0) show.move_forward(x);
-    else if(x < 0) show.move_back(-x);
+global.move = (x, y) => {
+    if(x > 0) move_forward(x);
+    else if(x < 0) move_back(-x);
 
-    if(y > 0) show.move_down(y);
-    else if(y < 0) show.move_up(y);
+    if(y > 0) move_down(y);
+    else if(y < 0) move_up(y);
 };
 
-show.save_pos    = () => out.write(esc + 's');
-show.restore_pos = () => out.write(esc + 'u');
+global.save_pos    = () => out.write(esc + 's');
+global.restore_pos = () => out.write(esc + 'u');
 
 // screen
-show.erase_up    = () => out.write(esc + '1J');
-show.erase_down  = () => out.write(esc + '0J');
-show.erase_all   = () => out.write(esc + '2J');
+global.erase_up    = () => out.write(esc + '1J');
+global.erase_down  = () => out.write(esc + '0J');
+global.erase_all   = () => out.write(esc + '2J');
 
 // line
-show.erase_begin = () => out.write(esc + '1K');
-show.erase_end   = () => out.write(esc + '0K');
-show.erase_line  = () => out.write(esc + '2K');
+global.erase_begin = () => out.write(esc + '1K');
+global.erase_end   = () => out.write(esc + '0K');
+global.erase_line  = () => out.write(esc + '2K');
 
 // screen
-show.scroll_up   = n => out.write(esc + (_.isNumber(n) ? n : '') + 'S');
-show.scroll_down = n => out.write(esc + (_.isNumber(n) ? n : '') + 'T');
+global.scroll_up   = n => out.write(esc + (_.isNumber(n) ? n : '') + 'S');
+global.scroll_down = n => out.write(esc + (_.isNumber(n) ? n : '') + 'T');
 
 ////////////////////
 module.exports = show;

@@ -5,7 +5,7 @@ const _ = require('underscore');
 const advice = root_require('advice');
 const common = root_require('common');
 const ind = root_require('indicators');
-const show = root_require('show');
+root_require('show');
 
 const strat = {};
 
@@ -71,8 +71,8 @@ strat.advise = trades => {
         this.trend = Math.sign(macd1.histogram);
     }
 
-    show.move_prev();
-    show.erase_end();
+    move_prev();
+    erase_end();
 
     if(this.timestamp !== ohlcv1.timestamp) {
         // print previous candle with white date
