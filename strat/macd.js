@@ -38,7 +38,7 @@ function print_line(candle, macd, color_date) {
 }
 
 function print_preroll(ohlcv, macd) {
-    console.log(as_date('Date'),
+    console.log(as_date('Date', '-'),
         as_price('Open'), as_price('High'), as_price('Low'), as_price('Close'),
         as_vol('Volume'), as_fixed('Hist', '-'),
     );
