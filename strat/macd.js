@@ -20,14 +20,12 @@ strat.init = conf => {
     this.min_down = -Math.abs(common.parse_float(conf.min_down, 'min_down'));
 };
 
-function comp_to(value, other) {
-    return value > other ? green : (value < other ? red : white);
-}
-
 function print_line(candle, macd, color_date) {
     var hist = _.isUndefined(macd) || _.isUndefined(macd.histogram)
              ? '-' : macd.histogram;
-    var color = comp_to(candle.close, candle.open);
+
+    var color = candle.close > candle.open ? green
+              : candle.close < candle.open ? red : white;
 
     console.log(color_date(as_date(candle.timestamp)),
         color (as_price(candle.open)),
@@ -35,7 +33,7 @@ function print_line(candle, macd, color_date) {
         color (as_price(candle.low)),
         color (as_price(candle.close)),
         yellow(as_vol  (candle.volume)),
-        comp_to(hist, 0)(as_fixed(hist, '+-'))
+        style(hist, as_fixed, { mod: '+-', comp_to: 0 })
     );
 }
 
