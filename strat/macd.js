@@ -24,34 +24,30 @@ function comp_to(value, other) {
     return value > other ? green : (value < other ? red : white);
 }
 
-function print_line(candle, macd1, date_color) {
+function print_line(candle, macd, color_date) {
+    var hist = _.isUndefined(macd) || _.isUndefined(macd.histogram)
+             ? '-' : macd.histogram;
     var color = comp_to(candle.close, candle.open);
 
-    console.log(date_color(as_date(candle.timestamp)),
-        color(fmt('%-7.6g', candle.open)),
-        color(fmt('%-7.6g', candle.high)),
-        color(fmt('%-7.6g', candle.low)),
-        color(fmt('%-7.6g', candle.close)),
-         cyan(fmt('%-9.8g', candle.volume)),
-        !_.isUndefined(macd1)
-            ? comp_to(macd1.histogram, 0)(fmt('%+-9.4g', macd1.histogram))
-            : fmt('%-7s', '-')
+    console.log(color_date(as_date(candle.timestamp)),
+        color (as_price(candle.open)),
+        color (as_price(candle.high)),
+        color (as_price(candle.low)),
+        color (as_price(candle.close)),
+        yellow(as_vol  (candle.volume)),
+        comp_to(hist, 0)(as_fixed(hist, '+-'))
     );
 }
 
 function print_preroll(ohlcv, macd) {
-    console.log(fmt('%-23s', 'Date'),
-        fmt('%-7s', 'Open'),
-        fmt('%-7s', 'High'),
-        fmt('%-7s', 'Low'),
-        fmt('%-7s', 'Close'),
-        fmt('%-9s', 'Volume'),
-        fmt('%-7s', 'Hist'),
+    console.log(as_date('Date'),
+        as_price('Open'), as_price('High'), as_price('Low'), as_price('Close'),
+        as_vol('Volume'), as_fixed('Hist', '-'),
     );
 
     var diff = macd.length - ohlcv.length;
-    ohlcv.forEach((candle, index) => {
-        print_line(candle, macd[index + diff], gray);
+    ohlcv.forEach((candle, idx) => {
+        print_line(candle, macd[idx + diff], gray);
     });
 }
 
@@ -64,8 +60,8 @@ strat.advise = trades => {
     );
 
     var ohlcv1 = _.last(ohlcv), ohlcv2 = _.last(ohlcv, 2)[0];
-    var macd1  = _.last(macd), macd2 = _.last(macd, 2)[0];
-    var trade  = _.last(trades);
+    var macd1 = _.last(macd), macd2 = _.last(macd, 2)[0];
+    var trade = _.last(trades);
 
     if(_.isUndefined(this.timestamp)) {
         // print preroll candles with gray date
@@ -89,19 +85,18 @@ strat.advise = trades => {
     print_line(ohlcv1, macd1, bg_blue);
 
     ////////////////////
-    var hist = macd1.histogram;
     var adv;
 
     // trend reversal
-    if(this.trend !== Math.sign(hist)) {
-        if(hist > this.min_up) {
-            this.trend = Math.sign(hist);
+    if(this.trend !== Math.sign(macd1.histogram)) {
+        if(macd1.histogram > this.min_up) {
+            this.trend = Math.sign(macd1.histogram);
 
             adv = advice.buy(trade.timestamp, trade.price);
             adv.print();
 
-        } else if(hist < this.min_down) {
-            this.trend = Math.sign(hist);
+        } else if(macd1.histogram < this.min_down) {
+            this.trend = Math.sign(macd1.histogram);
 
             adv = advice.sell(trade.timestamp, trade.price);
             adv.print();
@@ -111,4 +106,5 @@ strat.advise = trades => {
     return adv;
 }
 
+////////////////////
 module.exports = strat;
