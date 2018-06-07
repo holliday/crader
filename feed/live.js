@@ -19,7 +19,7 @@ class LiveFeed extends FeedBase {
 
     async fetch_trades(from, to) {
         for(;;) {
-            var since = this.trades.length ? _.last(this.trades).timestamp : from;
+            var since = this.trades.length ? _.last(this.trades).timestamp + 1: from;
             if(since > to) break;
 
             var trades;
