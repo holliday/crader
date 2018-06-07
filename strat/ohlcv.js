@@ -16,14 +16,17 @@ strat.advise = trades => {
 
     console.log('Received', bold(ohlcv.length), 'OHLCV candles:');
 
-    console.log(gray('Date                Open    High    Low     Close   Volume'));
+    console.log(gray(as_date('Date'),
+        as_price('Open'), as_price('High'), as_price('Low'), as_price('Close'),
+        as_vol('Volume'),
+    ));
     ohlcv.forEach(candle => {
         console.log(blue(as_date(candle.timestamp)),
-                  fmt('%-7.6g', candle.open),
-            green(fmt('%-7.6g', candle.high)),
-              red(fmt('%-7.6g', candle.low)),
-             bold(fmt('%-7.6g', candle.close)),
-             cyan(fmt('%-9.8g', candle.volume)),
+            white (as_price(candle.open)),
+            green (as_price(candle.high)),
+            red   (as_price(candle.low)),
+            bold  (as_price(candle.close)),
+            yellow(as_vol  (candle.volume)),
         );
     });
 
