@@ -2,6 +2,7 @@ var conf = {};
 
 conf.feed = 'cache';
 
+conf.exchange = '';
 conf.asset = '';
 conf.currency = '';
 

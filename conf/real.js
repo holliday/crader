@@ -1,5 +1,5 @@
 var conf = {};
 
-conf.trader = 'live';
+conf.trader = 'real';
 
 module.exports = conf;

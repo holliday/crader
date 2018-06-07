@@ -2,9 +2,10 @@
 
 const TraderBase = root_require('trader/base');
 
-class LiveTrader extends TraderBase {
+class RealTrader extends TraderBase {
     constructor(conf) {
         super();
+        console.log('Creating', bold('real'), 'trader');
     }
 
     accept(advice) {
@@ -12,4 +13,4 @@ class LiveTrader extends TraderBase {
     }
 };
 
-module.exports = conf => new LiveTrader(conf);
+module.exports = conf => new RealTrader(conf);
