@@ -1,4 +1,8 @@
 'use strict';
+global.root_require = name => require(__dirname + '/' + name);
+
+const _ = require('underscore');
+const path = require('path');
 
 root_require('show');
 
@@ -22,6 +26,30 @@ X8888  X888h       ="8888f8888r    us888u.    ^"*8888N    ud8888.  ="8888f8888r
      \`""***~"\`                   ^Y"   ^Y'      ""         "YP'
 `
     ));
+};
+
+////////////////////
+common.node = path.parse(process.argv[0]).base;
+common.name = path.parse(process.argv[1]).base;
+
+////////////////////
+common.require_type = (type, name) => {
+    if(_.isUndefined(name)) throw new Error(`Unspecified ${type}`);
+    return root_require(type + '/' + name);
+};
+
+////////////////////
+// load and merge conf files
+common.read_conf = (names) => {
+    var conf = { };
+
+    if(!_.isUndefined(names)) {
+        [].concat(names).forEach(name => {
+            Object.assign(conf, common.require_type('conf', name));
+        });
+    }
+
+    return conf;
 };
 
 ////////////////////
