@@ -73,8 +73,8 @@ strat.advise = trades => {
     erase_end();
 
     if(this.timestamp !== ohlcv1.timestamp) {
-        // print previous candle with white date
-        print_line(ohlcv2, macd2, white);
+        // print previous candle with blue date
+        print_line(ohlcv2, macd2, blue);
 
         this.timestamp = ohlcv1.timestamp;
     }

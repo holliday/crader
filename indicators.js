@@ -26,7 +26,7 @@ ind.ohlcv = (trades, frame) => {
             high:      Math.max(...prices),
             low:       Math.min(...prices),
             close:     _.last(prices),
-            volume:    candle.map(e => e.quantity).reduce((sum, val) => sum + val),
+            volume:    candle.map(e => e.amount).reduce((sum, val) => sum + val),
         });
     }
 

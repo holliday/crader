@@ -2,6 +2,7 @@ var conf = {};
 
 conf.feed = 'live';
 
+conf.exchange = '';
 conf.asset = '';
 conf.currency = '';
 

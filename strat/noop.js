@@ -16,7 +16,7 @@ strat.advise = trades => {
     console.log('Received', bold(trades.length), 'trades:');
     trades.forEach(trade => {
         console.log(blue(as_date(trade.timestamp)),
-            yellow(as_vol(trade.quantity)), '@', bold(as_price(trade.price, '-'))
+            yellow(as_vol(trade.amount)), '@', bold(as_price(trade.price, '-'))
         );
     });
 

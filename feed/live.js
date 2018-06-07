@@ -1,23 +1,20 @@
 'use strict';
 
 const _ = require('underscore');
-const binance = require('binance');
+const ccxt = require('ccxt');
 
 const common = root_require('common');
 const FeedBase = root_require('feed/base');
 root_require('show');
 
-const rate_limit = 1000;
-
 class LiveFeed extends FeedBase {
     constructor(exchange, symbol, length, start, end) {
-        super(start, end, rate_limit, length);
+        super(start, end, exchange.rateLimit, length);
 
         this.exchange = exchange;
         this.symbol = symbol;
 
         this.trades = [];
-        this.next_fetch = Date.now();
     }
 
     async fetch_trades(from, to) {
@@ -25,18 +22,10 @@ class LiveFeed extends FeedBase {
             var since = this.trades.length ? _.last(this.trades).timestamp : from;
             if(since > to) break;
 
+            var trades;
             for(;;) try {
-                // rate limit
-                await common.sleep_until(this.next_fetch);
-                this.next_fetch = Date.now() + rate_limit;
-
-                var trades = await this.exchange.aggTrades({
-                    symbol: this.symbol,
-                    startTime: since,
-                    endTime: since + 60 * 60 * 1000,
-                });
+                trades = await this.exchange.fetchTrades(this.symbol, since);
                 break;
-
             } catch (e) {
                 console.error(e);
             }
@@ -44,8 +33,8 @@ class LiveFeed extends FeedBase {
 
             trades = trades.map(trade => ({
                 timestamp: trade.timestamp,
-                price: parseFloat(trade.price),
-                quantity: parseFloat(trade.quantity),
+                price: trade.price,
+                amount: trade.amount,
             }));
 
             // remove duplicates
@@ -63,20 +52,32 @@ class LiveFeed extends FeedBase {
     static create(conf) {
         console.log('Creating', bold('live'), 'feed');
 
-        console.log('Creating exchange');
-        var exchange = new binance.BinanceRest({
-            key: conf.api_key,
-            secret: conf.secret,
-        });
+        if(!ccxt.exchanges.includes(conf.exchange))
+            throw new Error('Unspecified or invalid exchange');
 
-        var symbol = conf.asset + conf.currency;
-        if(_.isUndefined(symbol) || symbol === '')
-            throw new Error('Unspecified or invalid asset and/or currency');
+        console.log('Creating exchange:', bold(conf.exchange));
+        var exchange = new ccxt[conf.exchange]();
+
+        exchange.apiKey = conf.api_key;
+        exchange.secret = conf.secret;
+        exchange.enableRateLimit = true;
+
+        if(!exchange.hasFetchTrades)
+            throw new Error('Exchange does not provide trade data');
+
+        var asset = common.parse_text(conf, 'asset');
+        var currency = common.parse_text(conf, 'currency');
+
+        var symbol = asset + '/' + currency;
         console.log('Symbol:', bold(symbol));
+
+        exchange.loadMarkets().then(() => {
+            if(!exchange.symbols.includes(symbol))
+                throw new Error('Unsupported symbol ' + symbol);
+        });
 
         var frame = common.parse_period(conf, 'frame');
         var count = common.parse_int(conf, 'count');
-
         console.log('Length:', bold(frame), 'x', bold(count));
 
         var end;
