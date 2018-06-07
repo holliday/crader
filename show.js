@@ -8,23 +8,19 @@ const sprintf = require('sprintf-js').sprintf;
 const show = {};
 
 ////////////////////
-function _fmt(value, mod, width) { return sprintf('%' + mod + width, value); }
+function _sprintf(mod, fmt, value) {
+    return sprintf('%' + mod + (_.isNumber(value) ? fmt : parseInt(fmt) + 's'), value);
+}
 
 global.as_date = (value, mod = '') => !isNaN(new Date(value))
     ? moment(value).format('YYYY-MM-DD HH:mm:ss' + mod)
-    : _fmt(value, mod, '19s');
+    : _sprintf(mod, '19s', value);
 
-global.as_price = (value, mod = '') =>
-    _fmt(value, mod, _.isNumber(value) ?  '8.7g' :  '8s');
-
-global.as_vol   = (value, mod = '') =>
-    _fmt(value, mod, _.isNumber(value) ? '10.9g' : '10s');
-
-global.as_num   = (value, mod = '') =>
-    _fmt(value, mod, _.isNumber(value) ?  '7.4g' :  '7s');
-
-global.as_fixed = (value, mod = '') =>
-    _fmt(value, mod, _.isNumber(value) ?  '8.4f' :  '8s');
+global.as_price = (value, mod = '') => _sprintf(mod, '8.7g' , value);
+global.as_vol   = (value, mod = '') => _sprintf(mod, '10.9g', value);
+global.as_int   = (value, mod = '') => _sprintf(mod, '8d'   , value);
+global.as_num   = (value, mod = '') => _sprintf(mod, '7.4g' , value);
+global.as_fixed = (value, mod = '') => _sprintf(mod, '8.4f' , value);
 
 ////////////////////
 // chalk styles
