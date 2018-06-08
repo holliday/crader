@@ -7,8 +7,9 @@ const common = root_require('common');
 const FeedBase = root_require('feed/base');
 root_require('show');
 
+////////////////////
 class LiveFeed extends FeedBase {
-    constructor(exchange, symbol, length, start, end) {
+    constructor(exchange, symbol, start, end, length) {
         super(start, end, exchange.rateLimit, length);
 
         this.exchange = exchange;
@@ -17,38 +18,7 @@ class LiveFeed extends FeedBase {
         this.trades = [];
     }
 
-    async fetch_trades(from, to) {
-        for(;;) {
-            var since = this.trades.length ? _.last(this.trades).timestamp + 1: from;
-            if(since > to) break;
-
-            var trades;
-            for(;;) try {
-                trades = await this.exchange.fetchTrades(this.symbol, since);
-                break;
-            } catch (e) {
-                console.error(e);
-            }
-            if(!trades.length) break;
-
-            trades = trades.map(trade => ({
-                timestamp: trade.timestamp,
-                price: trade.price,
-                amount: trade.amount,
-            }));
-
-            // remove duplicates
-            while(this.trades.length
-                && _.last(this.trades).timestamp >= trades[0].timestamp
-            ) this.trades.pop();
-
-            this.trades.push(...trades);
-        }
-
-        this.trades = this.trades.filter(trade => trade.timestamp >= from);
-        return this.trades.filter(trade => trade.timestamp <= to);
-    }
-
+    ////////////////////
     static create(conf) {
         console.log('Creating', bold('live'), 'feed');
 
@@ -110,8 +80,42 @@ class LiveFeed extends FeedBase {
                 bold(_.isUndefined(end) ? '...' : as_date(new Date(end)))
             );
 
-        return new LiveFeed(exchange, symbol, frame * count, start, end);
+        return new LiveFeed(exchange, symbol, start, end, frame * count);
+    }
+
+    ////////////////////
+    async fetch_trades(from, to) {
+        for(;;) {
+            var since = this.trades.length ? _.last(this.trades).timestamp + 1 : from;
+            if(since > to) break;
+
+            var trades;
+            for(;;) try {
+                trades = await this.exchange.fetchTrades(this.symbol, since);
+                break;
+            } catch (e) {
+                console.error(e);
+            }
+            if(!trades.length) break;
+
+            trades = trades.map(trade => ({
+                timestamp: trade.timestamp,
+                price: trade.price,
+                amount: trade.amount,
+            }));
+
+            // remove duplicates
+            while(this.trades.length
+                && _.last(this.trades).timestamp >= trades[0].timestamp
+            ) this.trades.pop();
+
+            this.trades.push(...trades);
+        }
+
+        this.trades = this.trades.filter(trade => trade.timestamp >= from);
+        return this.trades.filter(trade => trade.timestamp <= to);
     }
 };
 
+////////////////////
 module.exports = conf => LiveFeed.create(conf);
