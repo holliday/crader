@@ -99,7 +99,6 @@ function add_to(db, trades) {
 
     // set up live feed
     var feed = root_require('feed/live')(conf);
-    feed.start += feed.length;
     feed.step = feed.length;
 
     // rock-n-roll
