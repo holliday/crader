@@ -51,11 +51,13 @@ function print_preroll(ohlcv, macd) {
 
 strat.advise = trades => {
     var ohlcv = ind.ohlcv(trades, this.frame);
+    if(!ohlcv.length) return;
 
     var macd = ind.macd(
         ohlcv.map(candle => candle.close),
         this.short_period, this.long_period, this.signal_period
     );
+    if(!macd.length) return;
 
     var ohlcv1 = _.last(ohlcv), ohlcv2 = _.last(ohlcv, 2)[0];
     var macd1 = _.last(macd), macd2 = _.last(macd, 2)[0];
