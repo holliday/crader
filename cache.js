@@ -78,6 +78,8 @@ function add_to(db, trades) {
     const name = common.parse_text(conf, 'exchange')
          + '_' + common.parse_text(conf, 'asset')
          + '_' + common.parse_text(conf, 'currency');
+
+    console.log('Opening cache database:', bold(name));
     var db = new sqlite('cache/' + name + '.sqlite');
 
     db.exec(`CREATE TABLE IF NOT EXISTS data (
@@ -99,7 +101,7 @@ function add_to(db, trades) {
 
     // set up live feed
     var feed = root_require('feed/live')(conf);
-    feed.step = feed.length;
+    feed.step = feed.frame * feed.count;
 
     // rock-n-roll
     feed.on('trades', trades => add_to(db, trades));
