@@ -100,6 +100,13 @@ common.parse_text = (conf, name) => {
     return text;
 };
 
+common.parse_date = (conf, name) => {
+    var date = (new Date(conf[name])).getTime();
+    if(isNaN(date)) throw new Error('Unspecified or invalid ' + name);
+
+    return date;
+}
+
 ////////////////////
 common.sleep_for = interval => new Promise(resolve => setTimeout(resolve, interval));
 common.sleep_until = date => common.sleep_for(date - Date.now());
