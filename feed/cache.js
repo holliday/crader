@@ -20,7 +20,7 @@ class CacheFeed extends FeedBase {
 
         this.db = new sqlite('cache/' + name + '.sqlite', { readonly: true });
         this.fetch = this.db.prepare(`SELECT timestamp, price, amount
-            FROM data WHERE timestamp >= ? LIMIT 1000`
+            FROM data WHERE timestamp >= ? LIMIT 100000`
         );
 
         if(ccxt.exchanges.includes(this.exchange)) {
@@ -37,7 +37,14 @@ class CacheFeed extends FeedBase {
             var since = this.trades.length ? _.last(this.trades).timestamp + 1 : from;
             if(since > to) break;
 
-            var trades = this.fetch.all(since);
+            var trades;
+            for(;;) try {
+                trades = this.fetch.all(since);
+                break;
+            } catch(e) {
+                console.error(e);
+                common.sleep_for(this.step);
+            }
             if(!trades.length) {
                 common.sleep_for(this.step);
                 break;
