@@ -36,11 +36,11 @@ class PaperTrader extends TraderBase {
     }
 
     perf() {
-        if(_.isUndefined(this.price)) return undefined;
-
-        var play = this.currency_amount + this.asset_amount * this.price;
-        var hold = this.init_currency_amount + this.init_asset_amount * this.price;
-        return (play / hold - 1) * 100;
+        if('price' in this) {
+            var play = this.currency_amount + this.asset_amount * this.price;
+            var hold = this.init_currency_amount + this.init_asset_amount * this.price;
+            return (play / hold - 1) * 100;
+        }
     }
 
     print_balance() {
