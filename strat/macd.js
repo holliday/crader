@@ -6,6 +6,7 @@ const advice = root_require('advice');
 const common = root_require('common');
 const ind = root_require('indicators');
 root_require('show');
+const trend = root_require('trend');
 
 const strat = {};
 
@@ -18,6 +19,10 @@ strat.init = conf => {
 
     this.min_up = common.parse_float(conf, 'min_up');
     this.min_down = -Math.abs(common.parse_float(conf, 'min_down'));
+
+    this.trend = new trend;
+    this.trend.add_state('up', advice.buy);
+    this.trend.add_state('down', advice.sell);
 };
 
 function print_line(candle, macd, color_date) {
@@ -68,7 +73,6 @@ strat.advise = trades => {
         print_preroll(ohlcv, macd);
 
         this.timestamp = ohlcv1.timestamp;
-        this.trend = Math.sign(macd1.histogram);
     }
 
     move_prev();
@@ -85,25 +89,13 @@ strat.advise = trades => {
     print_line(ohlcv1, macd1, bg_blue);
 
     ////////////////////
-    var adv;
+         if(macd1.histogram > this.min_up  ) this.trend.state = 'up';
+    else if(macd1.histogram < this.min_down) this.trend.state = 'down';
 
-    // trend reversal
-    if(this.trend !== Math.sign(macd1.histogram)) {
-        if(macd1.histogram > this.min_up) {
-            this.trend = Math.sign(macd1.histogram);
+    var advice = this.trend.advise(trade.timestamp, trade.price);
+    if(!_.isUndefined(advice)) advice.print();
 
-            adv = advice.buy(trade.timestamp, trade.price);
-            adv.print();
-
-        } else if(macd1.histogram < this.min_down) {
-            this.trend = Math.sign(macd1.histogram);
-
-            adv = advice.sell(trade.timestamp, trade.price);
-            adv.print();
-        }
-    }
-
-    return adv;
+    return advice;
 }
 
 ////////////////////
