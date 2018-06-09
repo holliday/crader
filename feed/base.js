@@ -23,10 +23,8 @@ class FeedBase extends EventEmitter {
         this.count = common.parse_int(conf, 'count');
         console.log('Length:', bold(this.frame), 'x', bold(this.count));
 
-        this.end = undefined;
-        if(!_.isUndefined(conf.end)) this.end = common.parse_date(conf, 'end');
+        if('end' in conf) this.end = common.parse_date(conf, 'end');
 
-        this.start = undefined;
         for(var name in conf)
             switch(name) {
                 case 'start':
@@ -34,19 +32,19 @@ class FeedBase extends EventEmitter {
                     break;
 
                 case 'period':
-                    this.start = (_.isUndefined(this.end) ?  Date.now() : this.end) -
+                    this.start = ('end' in this ? this.end : Date.now()) -
                         common.parse_period(conf, 'period');
                     break;
             }
 
-        if(!_.isUndefined(this.end) && _.isUndefined(this.start))
+        if('end' in this && !('start' in this.start))
             throw new Error('Missing one of start or period');
 
-        if(!_.isUndefined(this.start))
+        if('start' in this)
             console.log('Interval:',
                 bold(as_date(new Date(this.start))),
                 'to', 
-                bold(_.isUndefined(this.end) ? '...' : as_date(new Date(this.end)))
+                bold('end' in this ? as_date(new Date(this.end)) : '...')
             );
 
         this.step = 1000;
@@ -64,7 +62,7 @@ class FeedBase extends EventEmitter {
     // If 'end' is undefined, run in live mode until stopped.
     //
     async run() {
-        for(var now = _.isUndefined(this.start) ? Date.now() : this.start;
+        for(var now = ('start' in this) ? this.start : Date.now();
             !(now > this.end);
             now = Math.min(now + this.step, Date.now())
         ) this.emit('trades',
