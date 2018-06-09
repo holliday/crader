@@ -91,12 +91,12 @@ function add_to(db, trades) {
 
     // if neither start nor period was specified,
     // get last timestamp from the database
-    if(_.isUndefined(conf.start) && _.isUndefined(conf.period)) {
-        var trade = db.prepare(`SELECT * FROM data
+    if(!('start' in conf || 'period' in conf)) {
+        var trades = db.prepare(`SELECT * FROM data
             ORDER BY timestamp DESC LIMIT 1;`
-        ).get();
+        ).all();
 
-        if(!_.isUndefined(trade)) conf.start = trade.timestamp;
+        if(trades.length) conf.start = trades[0].timestamp;
     }
 
     // set up live feed
