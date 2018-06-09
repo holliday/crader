@@ -26,7 +26,7 @@ strat.init = conf => {
 };
 
 function print_line(candle, macd, color_date) {
-    var hist = _.isUndefined(macd) || _.isUndefined(macd.histogram)
+    var hist = _.isUndefined(macd) || !('histogram' in macd)
              ? '-' : macd.histogram;
 
     var color = candle.close > candle.open ? green
@@ -68,7 +68,7 @@ strat.advise = trades => {
     var macd1 = _.last(macd), macd2 = _.last(macd, 2)[0];
     var trade = _.last(trades);
 
-    if(_.isUndefined(this.timestamp)) {
+    if(!('timestamp' in this)) {
         // print preroll candles with gray date
         print_preroll(ohlcv, macd);
 
