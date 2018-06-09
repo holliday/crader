@@ -10,7 +10,7 @@ class StratBase extends EventEmitter {
     constructor(conf) {
         super();
 
-        if(_.isUndefined(conf.strat) || conf.strat === '')
+        if(!('strat' in conf) || conf.strat === '')
             throw new Error('Unspecified or invalid strat');
 
         console.log('Creating strat:', bold(conf.strat));
