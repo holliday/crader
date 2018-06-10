@@ -34,7 +34,6 @@ strat.init = conf => {
     this.table.add_column('Close' , as_price);
     this.table.add_column('Volume', as_vol, yellow);
     this.table.add_column('Hist'  , as_fixed, '+-');
-
 };
 
 strat.print_line = (candle, hist, color_date) => {
@@ -49,6 +48,8 @@ strat.print_line = (candle, hist, color_date) => {
 };
 
 strat.advise = trades => {
+    var advice;
+
     var ohlcv = ind.ohlcv(trades, this.frame);
     if(!ohlcv.length) return;
 
@@ -57,42 +58,44 @@ strat.advise = trades => {
     );
     if(!macd.length) return;
 
+    var trade = _.last(trades);
+    var [ candle_done, candle_new ] = _.last(ohlcv, 2);
+    var [ macd_done, macd_new ] = _.last(macd, 2);
+
+    // first time?
     if(!('timestamp' in this)) {
-        // print preroll candles with gray date
+        this.timestamp = candle_new.timestamp;
+
+        // print head & preroll
         this.table.with('*', white).print_head();
 
-        while(macd.length < ohlcv.length)
-            macd.unshift({ histogram: '-' });
-
+        while(macd.length < ohlcv.length) macd.unshift({ histogram: '-' });
         ohlcv.forEach((candle, idx) =>
             strat.print_line(candle, macd[idx].histogram, gray)
         );
-        this.timestamp = _.last(ohlcv).timestamp;
     }
 
     move_prev();
     erase_end();
 
-    var candle = _.last(ohlcv);
+    // new candle
+    if(this.timestamp !== candle_new.timestamp) {
+        this.timestamp = candle_new.timestamp;
 
-    // print previous candle with blue date
-    if(this.timestamp !== candle.timestamp) {
-        strat.print_line(_.last(ohlcv, 2)[0], _.last(macd, 2)[0].histogram, blue);
-        this.timestamp = candle.timestamp;
+        // print final line
+        strat.print_line(candle_done, macd_done.histogram, blue);
+
+        // MACD
+             if(macd_done.histogram >= this.min_up  ) this.trend.state = 'up';
+        else if(macd_done.histogram <= this.min_down) this.trend.state = 'down';
+
+        advice = this.trend.advise(trade.timestamp, trade.price);
+        if(!_.isUndefined(advice)) advice.print();
     }
 
-    var hist = _.last(macd).histogram;
-    var trade = _.last(trades);
-
-    candle.timestamp = trade.timestamp;
-    strat.print_line(candle, hist, bg_blue);
-
-    ////////////////////
-         if(hist > this.min_up  ) this.trend.state = 'up';
-    else if(hist < this.min_down) this.trend.state = 'down';
-
-    var advice = this.trend.advise(trade.timestamp, trade.price);
-    if(!_.isUndefined(advice)) advice.print();
+    // print current line
+    candle_new.timestamp = trade.timestamp;
+    strat.print_line(candle_new, macd_new.histogram, bg_blue);
 
     return advice;
 }
