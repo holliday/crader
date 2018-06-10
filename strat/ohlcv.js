@@ -4,11 +4,20 @@ const advice = root_require('advice');
 const common = root_require('common');
 const ind = root_require('indicators');
 root_require('show');
+const table = root_require('table');
 
 const strat = {};
 
 strat.init = conf => {
     this.frame = common.parse_period(conf, 'frame');
+
+    this.table = new table();
+    this.table.add_column('Date'  , as_date , blue  );
+    this.table.add_column('Open'  , as_price        );
+    this.table.add_column('High'  , as_price, green );
+    this.table.add_column('Low'   , as_price, red   );
+    this.table.add_column('Close' , as_price, bold  );
+    this.table.add_column('Volume', as_vol  , yellow);
 };
 
 strat.advise = trades => {
@@ -17,23 +26,14 @@ strat.advise = trades => {
 
     console.log('Received', bold(ohlcv.length), 'OHLCV candles:');
 
-    console.log(gray(as_date('Date'),
-        as_price('Open'), as_price('High'), as_price('Low'), as_price('Close'),
-        as_vol('Volume'),
-    ));
-    ohlcv.forEach(candle => {
-        console.log(blue(as_date(candle.timestamp)),
-            white (as_price(candle.open)),
-            green (as_price(candle.high)),
-            red   (as_price(candle.low)),
-            bold  (as_price(candle.close)),
-            yellow(as_vol  (candle.volume)),
-        );
-    });
-
-    //return advice.buy();
-    // or
-    //return advice.sell();
+    this.table.with('*', gray).print_head();
+    ohlcv.forEach(candle =>
+        this.table.print_line(candle.timestamp,
+            candle.open, candle.high, candle.low, candle.close,
+            candle.volume,
+        )
+    );
+    console.log();
 }
 
 module.exports = strat;
