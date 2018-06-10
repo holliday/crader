@@ -74,14 +74,15 @@ strat.advise = trades => {
     erase_end();
 
     var candle = _.last(ohlcv);
-    var hist   = _.last(macd).histogram;
-    var trade  = _.last(trades);
 
     // print previous candle with blue date
     if(this.timestamp !== candle.timestamp) {
         strat.print_line(_.last(ohlcv, 2)[0], _.last(macd, 2)[0].histogram, blue);
         this.timestamp = candle.timestamp;
     }
+
+    var hist = _.last(macd).histogram;
+    var trade = _.last(trades);
 
     candle.timestamp = trade.timestamp;
     strat.print_line(candle, hist, bg_blue);
