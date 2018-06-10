@@ -3,26 +3,29 @@
 const advice = root_require('advice');
 const ind = root_require('indicators');
 root_require('show');
+const table = root_require('table');
 
 const strat = {};
 
 strat.init = conf => {
-    // do something
+    this.table = new table();
+    this.table.add_column('Date'  , as_date      , blue  );
+    this.table.add_column('Volume', as_vol       , yellow);
+    this.table.add_column('Price' , as_price, '-', bold  );
 };
 
 strat.advise = trades => {
-    // do something
+    if(!trades.length) return;
 
     console.log('Received', bold(trades.length), 'trades:');
-    trades.forEach(trade => {
-        console.log(blue(as_date(trade.timestamp)),
-            yellow(as_vol(trade.amount)), '@', bold(as_price(trade.price, '-'))
-        );
-    });
 
-    //return advice.buy();
-    // or
-    //return advice.sell();
+    this.table.with('*', white).print_head();
+    trades.forEach(trade => this.table.print_line(
+        trade.timestamp,
+        trade.amount,
+        trade.price
+    ));
+    console.log();
 }
 
 module.exports = strat;
