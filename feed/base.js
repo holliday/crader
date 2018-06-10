@@ -37,7 +37,7 @@ class FeedBase extends EventEmitter {
                     break;
             }
 
-        if('end' in this && !('start' in this.start))
+        if('end' in this && !('start' in this))
             throw new Error('Missing one of start or period');
 
         if('start' in this)
