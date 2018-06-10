@@ -37,14 +37,10 @@ strat.init = conf => {
 
 };
 
-function comp_to(a, b) {
-    return a > b ? green : a < b ? red : white;
-}
-
 strat.print_line = (candle, hist, color_date) => {
     this.table.with( 'Date', color_date)
               .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
-              .with( 'Hist', comp_to(hist, 0))
+              .with( 'Hist', comp_to_0(hist))
         .print_line(candle.timestamp,
             candle.open, candle.high, candle.low, candle.close,
             candle.volume,
