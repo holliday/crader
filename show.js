@@ -75,6 +75,9 @@ global.icomp_to = (x, y) => x > y ? bg_green : x < y ? bg_red : white;
 global.comp_to_0 = x => comp_to(x, 0);
 global.icomp_to_0 = x => icomp_to(x, 0);
 
+global.range_in = (x, low, high) => x < low ? green : x > high ? red : white;
+global.irange_in = (x, low, high) => x < low ? bg_green : x > high ? bg_red : white;
+
 ////////////////////
 const esc = '\u001b[';
 const out = process.stdout;
