@@ -68,26 +68,12 @@ global.bg_bright_magenta = chalk.bgMagentaBright;
 global.bg_bright_cyan    = chalk.bgCyanBright;
 global.bg_bright_white   = chalk.bgWhiteBright;
 
-global.style = (value, fmt, params) => {
-    var style, mod ='';
-    for(var name in params) {
-        var param = params[name];
-        switch(name) {
-            case 'comp_to':
-                if(value > param) style = green;
-                else if(value < param) style = red;
-                break;
+////////////////////
+global.comp_to = (x, y) => x > y ? green : x < y ? red : white;
+global.icomp_to = (x, y) => x > y ? bg_green : x < y ? bg_red : white;
 
-            case 'icomp_to':
-                if(value > param) style = bg_green;
-                else if(value < param) style = bg_red;
-                break;
-
-            case 'mod': mod = param; break;
-        }
-    }
-    return _.isUndefined(style) ? fmt(value, mod) : style(fmt(value, mod));
-};
+global.comp_to_0 = x => comp_to(x, 0);
+global.icomp_to_0 = x => icomp_to(x, 0);
 
 ////////////////////
 const esc = '\u001b[';
