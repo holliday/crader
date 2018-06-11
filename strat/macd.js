@@ -21,6 +21,7 @@ strat.init = conf => {
     this.min_up = common.parse_float(conf, 'min_up');
     this.min_down = -Math.abs(common.parse_float(conf, 'min_down'));
 
+    ////////////////////
     this.trend = new trend;
     this.trend.add_state('up', advice.buy);
     this.trend.add_state('down', advice.sell);
