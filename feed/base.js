@@ -63,11 +63,12 @@ class FeedBase extends EventEmitter {
     //
     async run() {
         for(var now = ('start' in this) ? this.start : Date.now();
-            !(now > this.end);
+            !(now > this.end || this.stop);
             now = Math.min(now + this.step, Date.now())
-        ) this.emit('trades',
-            await this.fetch_trades(now - this.frame * this.count, now)
-        );
+        ) this.emit('trades', (await Promise.all([
+            this.fetch_trades(now - this.frame * this.count, now),
+            common.sleep_for(0), // allow Ctrl+C
+        ]))[0]);
     }
 };
 
