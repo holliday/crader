@@ -46,6 +46,9 @@ and <conf> is one or more conf files to use.
     var strat = root_require('strat/base')(conf);
     var trader = common.require_type('trader', conf.trader)(conf);
 
+    process.on('SIGINT' , () => feed.stop = true);
+    process.on('SIGTERM', () => feed.stop = true);
+
     feed.on('trades', trades => strat.advise(trades));
     strat.on('advice', advice => trader.accept(advice));
 
