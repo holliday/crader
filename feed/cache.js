@@ -43,10 +43,10 @@ class CacheFeed extends FeedBase {
                 break;
             } catch(e) {
                 console.error(e);
-                common.sleep_for(this.step);
+                await common.sleep_for(this.step);
             }
             if(!trades.length) {
-                common.sleep_for(this.step);
+                await common.sleep_for(this.step);
                 break;
             }
 
