@@ -35,9 +35,10 @@ strat.init = conf => {
 };
 
 strat.print_line = (candle, rsi, color_date) => {
-    this.table.with( 'Date', color_date)
-              .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
-              .with( 'RSI' , range_in(rsi, this.oversold, this.overbought))
+    this.table.with('Date', color_date)
+        .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
+        .with('RSI', not_in(rsi, this.oversold, this.overbought, 
+            { below: green, above: red }))
         .print_line(candle.timestamp,
             candle.open, candle.high, candle.low, candle.close,
             candle.volume,

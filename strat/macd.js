@@ -38,8 +38,8 @@ strat.init = conf => {
 
 strat.print_line = (candle, hist, color_date) => {
     this.table.with( 'Date', color_date)
-              .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
-              .with( 'Hist', comp_to_0(hist))
+        .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
+        .with('Hist', not_in(hist, this.min_down, this.min_up))
         .print_line(candle.timestamp,
             candle.open, candle.high, candle.low, candle.close,
             candle.volume,

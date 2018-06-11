@@ -69,14 +69,19 @@ global.bg_bright_cyan    = chalk.bgCyanBright;
 global.bg_bright_white   = chalk.bgWhiteBright;
 
 ////////////////////
-global.comp_to = (x, y) => x > y ? green : x < y ? red : white;
-global.icomp_to = (x, y) => x > y ? bg_green : x < y ? bg_red : white;
+global.noop = chalk;
 
-global.comp_to_0 = x => comp_to(x, 0);
-global.icomp_to_0 = x => icomp_to(x, 0);
+global.below = (x, y, style) => x < y ? style : noop;
+global.above = (x, y, style) => x > y ? style : noop;
 
-global.range_in = (x, low, high) => x < low ? green : x > high ? red : white;
-global.irange_in = (x, low, high) => x < low ? bg_green : x > high ? bg_red : white;
+const style = {
+    below: red,
+    above: green,
+};
+
+global.not_in = (x, low, high, s = style) =>
+    x < low ? s.below : x > high ? s.above : noop;
+global.comp_to = (x, y, s = style) => not_in(x, y, y, s);
 
 ////////////////////
 const esc = '\u001b[';

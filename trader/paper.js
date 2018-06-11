@@ -51,7 +51,7 @@ class PaperTrader extends TraderBase {
             as_vol(this.asset_amount), cyan(this.asset),
             as_price(this.currency_amount), magenta(this.currency), 
             !_.isUndefined(perf)
-                ? comp_to_0(perf)(as_fixed(perf, '+')) + '%'
+                ? comp_to(perf, 0)(as_fixed(perf, '+')) + '%'
                     + gray(' (compared to buy/hold)')
                 : ''
         );
