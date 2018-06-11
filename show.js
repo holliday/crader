@@ -19,7 +19,7 @@ global.as_date = (value, mod = '') => !isNaN(new Date(value))
 global.as_price = (value, mod = '') => _sprintf(mod, '8.7g' , value);
 global.as_vol   = (value, mod = '') => _sprintf(mod, '10.9g', value);
 global.as_int   = (value, mod = '') => _sprintf(mod, '8d'   , value);
-global.as_num   = (value, mod = '') => _sprintf(mod, '7.4g' , value);
+global.as_num   = (value, mod = '') => _sprintf(mod, '7.4g' , value < 0.00001 ? 0 : value);
 global.as_fixed = (value, mod = '') => _sprintf(mod, '8.4f' , value);
 
 ////////////////////
