@@ -4,7 +4,9 @@ const common = require('./common');
 
 ////////////////////
 (async () => { try {
-    var conf = common.read_conf();
+    var conf = {};
+
+    common.read_args(conf);
     common.process(conf);
 
     var feed   = new (common.local_require('feed', conf.feed))(conf);

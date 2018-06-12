@@ -206,17 +206,15 @@ In conf-specific options, dashes (-) are converted to underscore (_).
 }
 
 ////////////////////
-function _read_conf(names) {
-    var conf = { };
+function _merge(conf, names) {
     names.forEach(name => {
         console.log('Opening conf:', name);
         Object.assign(conf, common.local_require('conf', name));
     });
-    return conf;
 }
 
 ////////////////////
-common.read_conf = () => {
+common.read_args = conf => {
     var args = minimist(process.argv.slice(2), opts);
 
     if(args.version === true) {
@@ -231,9 +229,8 @@ common.read_conf = () => {
         process.exit();
     }
 
-    var conf = _read_conf(args._);
+    _merge(conf, args._);
 
-    // process args
     for(var name in args) {
         switch(name) {
             case 'live':
@@ -259,7 +256,6 @@ common.read_conf = () => {
     }
 
     console.log('Merged conf:', conf);
-    return conf;
 }
 
 ////////////////////
