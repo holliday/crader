@@ -2,7 +2,7 @@
   "name": "crader",
   "version": "3.0.0",
   "description": "Crypto trader",
-  "main": "main.js",
+  "main": "run.js",
   "repository": "https://github.com/holliday/crader.git",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
