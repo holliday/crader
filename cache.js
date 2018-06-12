@@ -11,6 +11,7 @@ const sqlite = root_require('sqlite3');
     var conf = {};
 
     common.read_args(conf);
+    conf.feed = 'live'
     conf.frame = '1m';
     conf.count = 1;
     console.log('Merged conf:', conf);
