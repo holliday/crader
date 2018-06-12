@@ -7,6 +7,7 @@ const common = require('./common');
     var conf = {};
 
     common.read_args(conf);
+    console.log('Merged conf:', conf);
     common.process(conf);
 
     var feed   = await common.local_require('feed', conf.feed).create(conf);
