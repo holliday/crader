@@ -9,22 +9,22 @@ root_require('show');
 ////////////////////
 class LiveFeed extends FeedBase {
     constructor(conf) {
-        super(conf);
+        super(conf); // captures conf
 
         console.log('Creating', bold('live'), 'feed');
 
-        if(!ccxt.exchanges.includes(conf.exchange))
+        if(!ccxt.exchanges.includes(this.conf.exchange_name))
             throw new Error('Unspecified or invalid exchange');
 
         console.log('Creating exchange');
-        conf.ccxt = new ccxt[conf.exchange]();
-        conf.ccxt.apiKey = conf.api_key;
-        conf.ccxt.secret = conf.secret;
+        this.conf.exchange = new ccxt[this.conf.exchange_name]();
+        this.conf.exchange.apiKey = this.conf.api_key;
+        this.conf.exchange.secret = this.conf.secret;
 
-        conf.ccxt.enableRateLimit = true;
-        conf.step = conf.ccxt.rateLimit;
+        this.conf.exchange.enableRateLimit = true;
+        this.conf.step = this.conf.exchange.rateLimit;
 
-        if(!conf.ccxt.hasFetchTrades)
+        if(!this.conf.exchange.hasFetchTrades)
             throw new Error('Exchange does not provide trade data');
 
         this.trades = [];
@@ -32,15 +32,13 @@ class LiveFeed extends FeedBase {
 
     ////////////////////
     async fetch_trades(from, to) {
-        var conf = this.conf;
-
         for(;;) {
             var since = this.trades.length ? _.last(this.trades).timestamp + 1 : from;
             if(since > to) break;
 
             var trades;
             for(;;) try {
-                trades = await conf.ccxt.fetchTrades(conf.symbol, since);
+                trades = await this.conf.exchange.fetchTrades(this.conf.symbol, since);
                 break;
             } catch(e) {
                 console.error(e);

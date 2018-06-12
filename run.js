@@ -5,7 +5,7 @@ const common = require('./common');
 ////////////////////
 (async () => { try {
     var conf = common.read_conf();
-    common.check(conf);
+    common.process(conf);
 
     var feed   = new (common.local_require('feed', conf.feed))(conf);
     var strat  = new (common.local_require('strat', 'base'))(conf);

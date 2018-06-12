@@ -20,14 +20,12 @@ class FeedBase extends EventEmitter {
     }
 
     async run() {
-        var conf = this.conf;
-
-        for(var now = _.isUndefined(conf.start) ? Date.now() : conf.start;
-            !(now > conf.end || conf.stop);
-            now = Math.min(now + conf.step, Date.now())
+        for(var now = _.isUndefined(this.conf.start) ? Date.now() : this.conf.start;
+            !(now > this.conf.end || this.conf.stop);
+            now = Math.min(now + this.conf.step, Date.now())
 
         ) this.emit('trades', (await Promise.all([
-            this.fetch_trades(now - conf.frame * conf.count, now),
+            this.fetch_trades(now - this.conf.frame * this.conf.count, now),
             common.sleep_for(0), // allow Ctrl+C
         ]))[0]);
     }

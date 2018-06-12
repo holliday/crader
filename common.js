@@ -76,7 +76,21 @@ common.sleep_for = interval => new Promise(resolve => setTimeout(resolve, interv
 common.sleep_until = date => common.sleep_for(date - Date.now());
 
 ////////////////////
-function _show_banner() {
+common.local_require = (type, name) => {
+    if(_.isUndefined(name)) throw new Error('Unspecified ' + type);
+    try {
+        var path = type + '/' + name + '.js';
+        fs.accessSync(path, fs.constants.R_OK);
+
+        return root_require(path);
+
+    } catch(e) {
+        throw new Error('Non-existent or inaccessible file ' + path);
+    }
+}
+
+////////////////////
+function _print_banner() {
     console.log(yellow(
 `
       ...                                      ..
@@ -125,7 +139,7 @@ const opts = options({
 });
 
 ////////////////////
-function _show_help() {
+function _print_help() {
     const node = path.parse(process.argv[0]).base;
     const name = path.parse(process.argv[1]).base;
 
@@ -192,20 +206,6 @@ In conf-specific options, dashes (-) are converted to underscore (_).
 }
 
 ////////////////////
-common.local_require = (type, name) => {
-    if(_.isUndefined(name)) throw new Error('Unspecified ' + type);
-    try {
-        var path = type + '/' + name + '.js';
-        fs.accessSync(path, fs.constants.R_OK);
-
-        return root_require(path);
-
-    } catch(e) {
-        throw new Error('Non-existent or inaccessible file ' + path);
-    }
-}
-
-////////////////////
 function _read_conf(names) {
     var conf = { };
     names.forEach(name => {
@@ -224,10 +224,10 @@ common.read_conf = () => {
         process.exit();
     }
 
-    _show_banner();
+    _print_banner();
 
     if(args.help === true) {
-        _show_help();
+        _print_help();
         process.exit();
     }
 
@@ -263,13 +263,14 @@ common.read_conf = () => {
 }
 
 ////////////////////
-common.check = conf => {
-    common.parse(conf, 'feed', !null);
+common.process = conf => {
+    conf.feed = common.parse(conf, 'feed', !null);
 
-    common.parse(conf, 'exchange', !null);
-    console.log('Exchange:', bold(conf.exchange));
+    conf.exchange_name = common.parse(conf, 'exchange', !null);
+    delete conf.exchange;
+    console.log('Exchange:', bold(conf.exchange_name));
 
-    common.parse(conf, 'symbol', !null);
+    conf.symbol = common.parse(conf, 'symbol', !null);
     console.log('Symbol:', bold(conf.symbol));
 
     conf.frame = common.parse_period(conf, 'frame', !null);

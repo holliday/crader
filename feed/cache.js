@@ -10,15 +10,15 @@ const sqlite = root_require('sqlite3');
 ////////////////////
 class CacheFeed extends FeedBase {
     constructor(conf) {
-        super(conf);
+        super(conf); // captures conf
 
         console.log('Creating', bold('cache'), 'feed');
 
-        var name = conf.exchange + '_' + conf.symbol.replace('/', '_');
-        console.log('Opening cache database:', bold(name));
+        this.conf.db_name = this.conf.exchange_name + '_' + this.conf.symbol.replace('/', '_');
+        console.log('Opening cache database:', bold(this.conf.db_name));
 
-        conf.db = new sqlite('cache/' + name + '.sqlite', { readonly: true });
-        conf.fetch = conf.db.prepare(`SELECT timestamp, price, amount
+        this.conf.db = new sqlite('cache/' + this.conf.db_name + '.sqlite', { readonly: true });
+        this.conf.db_fetch = this.conf.db.prepare(`SELECT timestamp, price, amount
             FROM data WHERE timestamp >= ? LIMIT 100000`
         );
 
@@ -27,22 +27,20 @@ class CacheFeed extends FeedBase {
 
     ////////////////////
     async fetch_trades(from, to) {
-        var conf = this.conf;
-
         for(;;) {
             var since = this.trades.length ? _.last(this.trades).timestamp + 1 : from;
             if(since > to) break;
 
             var trades;
             for(;;) try {
-                trades = conf.fetch.all(since);
+                trades = this.conf.db_fetch.all(since);
                 break;
             } catch(e) {
                 console.error(e);
-                await common.sleep_for(conf.step);
+                await common.sleep_for(this.conf.step);
             }
             if(!trades.length) {
-                await common.sleep_for(conf.step);
+                await common.sleep_for(this.conf.step);
                 break;
             }
 
