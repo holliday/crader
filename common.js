@@ -132,8 +132,8 @@ const opts = options({
     period  : { type: 'string' , alias: 'p' },
 
     trader  : { type: 'string' ,            },
-    paper   : { type: 'boolean',            }, // shorthand for --trader=paper
     real    : { type: 'boolean',            }, // shorthand for --trader=real
+    paper   : { type: 'boolean',            }, // shorthand for --trader=paper
     assets  : { type: 'string' , alias: 'a' },
     currency: { type: 'string' , alias: 'c' },
 });
