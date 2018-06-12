@@ -12,11 +12,11 @@ const trend = root_require('trend');
 const strat = {};
 
 strat.init = conf => {
-    this.frame = common.parse_period(conf, 'frame');
+    this.conf = conf;
 
-    this.rsi_period = common.parse_int(conf, 'rsi_period');
-    this.oversold   = common.parse_int(conf, 'oversold');
-    this.overbought = common.parse_int(conf, 'overbought');
+    conf.rsi_period = common.parse_int(conf, 'rsi_period', !null);
+    conf.oversold   = common.parse_int(conf, 'oversold', !null);
+    conf.overbought = common.parse_int(conf, 'overbought', !null);
 
     ////////////////////
     this.trend = new trend;
@@ -37,7 +37,7 @@ strat.init = conf => {
 strat.print_line = (candle, rsi, color_date) => {
     this.table.with('Date', color_date)
         .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
-        .with('RSI', not_in(rsi, this.oversold, this.overbought, 
+        .with('RSI', not_in(rsi, this.conf.oversold, this.conf.overbought, 
             { below: green, above: red }))
         .print_line(candle.timestamp,
             candle.open, candle.high, candle.low, candle.close,
@@ -49,10 +49,10 @@ strat.print_line = (candle, rsi, color_date) => {
 strat.advise = trades => {
     var advice;
 
-    var ohlcv = ind.ohlcv(trades, this.frame);
+    var ohlcv = ind.ohlcv(trades, this.conf.frame);
     if(!ohlcv.length) return;
 
-    var rsi = ind.rsi(ohlcv.map(candle => candle.close), this.rsi_period);
+    var rsi = ind.rsi(ohlcv.map(candle => candle.close), this.conf.rsi_period);
     if(!rsi.length) return;
 
     var trade = _.last(trades);
@@ -60,7 +60,7 @@ strat.advise = trades => {
     var [ rsi_done, rsi_new ] = _.last(rsi, 2);
 
     // first time?
-    if(!('timestamp' in this)) {
+    if(_.isUndefined(this.timestamp)) {
         this.timestamp = candle_new.timestamp;
 
         // print head & preroll
@@ -83,11 +83,10 @@ strat.advise = trades => {
         strat.print_line(candle_done, rsi_done, blue);
 
         // RSI
-             if(rsi_done <= this.oversold) this.trend.state = 'oversold';
-        else if(rsi_done >= this.overbought) this.trend.state = 'overbought';
+             if(rsi_done <= this.conf.oversold) this.trend.state = 'oversold';
+        else if(rsi_done >= this.conf.overbought) this.trend.state = 'overbought';
 
         advice = this.trend.advise(trade.timestamp, trade.price);
-        if(!_.isUndefined(advice)) advice.print();
     }
 
     // print current line

@@ -7,7 +7,7 @@ conf.strat = 'macd';
 conf.frame = '15m';
 conf.count = 38; // long_period + short_period
 
-// macd settings
+// MACD settings
 conf.short_period = 12;
 conf.long_period = 26;
 conf.signal_period = 9;

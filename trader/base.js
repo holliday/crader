@@ -3,8 +3,9 @@
 const EventEmitter = require('events');
 
 class TraderBase extends EventEmitter {
-    constructor() {
+    constructor(conf) {
         super();
+        this.conf = conf;
     }
 
     accept(advice) {

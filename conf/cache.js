@@ -3,7 +3,6 @@ var conf = {};
 conf.feed = 'cache';
 
 conf.exchange = '';
-conf.asset = '';
-conf.currency = '';
+conf.symbol = '';
 
 module.exports = conf;

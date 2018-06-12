@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('underscore');
-const ccxt = require('ccxt');
 
 const common = root_require('common');
 const FeedBase = root_require('feed/base');
@@ -15,38 +14,35 @@ class CacheFeed extends FeedBase {
 
         console.log('Creating', bold('cache'), 'feed');
 
-        const name = this.exchange + '_' + this.asset + '_' + this.currency;
+        var name = conf.exchange + '_' + conf.symbol.replace('/', '_');
         console.log('Opening cache database:', bold(name));
 
-        this.db = new sqlite('cache/' + name + '.sqlite', { readonly: true });
-        this.fetch = this.db.prepare(`SELECT timestamp, price, amount
+        conf.db = new sqlite('cache/' + name + '.sqlite', { readonly: true });
+        conf.fetch = conf.db.prepare(`SELECT timestamp, price, amount
             FROM data WHERE timestamp >= ? LIMIT 100000`
         );
-
-        if(ccxt.exchanges.includes(this.exchange)) {
-            var exch = new ccxt[this.exchange]();
-            this.step = exch.rateLimit;
-        }
 
         this.trades = [];
     }
 
     ////////////////////
     async fetch_trades(from, to) {
+        var conf = this.conf;
+
         for(;;) {
             var since = this.trades.length ? _.last(this.trades).timestamp + 1 : from;
             if(since > to) break;
 
             var trades;
             for(;;) try {
-                trades = this.fetch.all(since);
+                trades = conf.fetch.all(since);
                 break;
             } catch(e) {
                 console.error(e);
-                await common.sleep_for(this.step);
+                await common.sleep_for(conf.step);
             }
             if(!trades.length) {
-                await common.sleep_for(this.step);
+                await common.sleep_for(conf.step);
                 break;
             }
 
@@ -59,4 +55,4 @@ class CacheFeed extends FeedBase {
 };
 
 ////////////////////
-module.exports = conf => new CacheFeed(conf);
+module.exports = CacheFeed;

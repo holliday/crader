@@ -4,7 +4,8 @@ const TraderBase = root_require('trader/base');
 
 class RealTrader extends TraderBase {
     constructor(conf) {
-        super();
+        super(conf);
+
         console.log('Creating', bold('real'), 'trader');
     }
 
@@ -13,4 +14,4 @@ class RealTrader extends TraderBase {
     }
 };
 
-module.exports = conf => new RealTrader(conf);
+module.exports = RealTrader;

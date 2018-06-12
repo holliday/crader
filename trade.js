@@ -1,53 +1,18 @@
 'use strict';
-global.root_require = name => require(__dirname + '/' + name);
 
-require('manakin').global; // color console
-const meow = require('meow');
-
-const common = root_require('common');
-
-////////////////////
-function read_args() {
-    var args = meow({
-        flags: {
-            help: {
-                type: 'boolean',
-                alias: 'h',
-            },
-            version: {
-                type: 'boolean',
-                alias: 'v',
-            },
-        },
-        help:
-`
-Usage: ${common.node} ${common.name} [option] <conf>...
-
-Where [option] is one of:
-    -h, --help           Show this help screen
-    -v, --version        Show version
-
-and <conf> is one or more conf files to use.
-`
-    });
-    return args;
-}
+const common = require('./common');
 
 ////////////////////
 (async () => { try {
-    common.banner();
+    var conf = common.read_conf();
+    common.check(conf);
 
-    var args = read_args();
+    var feed   = new (common.local_require('feed', conf.feed))(conf);
+    var strat  = new (common.local_require('strat', 'base'))(conf);
+    var trader = new (common.local_require('trader', conf.trader))(conf);
 
-    var conf = common.read_conf(args.input);
-    console.log("Merged conf:", conf);
-
-    var feed = common.require_type('feed', conf.feed)(conf);
-    var strat = root_require('strat/base')(conf);
-    var trader = common.require_type('trader', conf.trader)(conf);
-
-    process.on('SIGINT' , () => feed.stop = true);
-    process.on('SIGTERM', () => feed.stop = true);
+    process.on('SIGINT' , () => conf.stop = true);
+    process.on('SIGTERM', () => conf.stop = true);
 
     feed.on('trades', trades => strat.advise(trades));
     strat.on('advice', advice => trader.accept(advice));

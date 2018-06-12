@@ -12,18 +12,18 @@ const trend = root_require('trend');
 const strat = {};
 
 strat.init = conf => {
-    this.frame = common.parse_period(conf, 'frame');
+    this.conf = conf;
 
-    this.rsi_period = common.parse_int(conf, 'rsi_period');
-    this.oversold   = common.parse_int(conf, 'oversold');
-    this.overbought = common.parse_int(conf, 'overbought');
+    conf.rsi_period = common.parse_int(conf, 'rsi_period', !null);
+    conf.oversold   = common.parse_int(conf, 'oversold', !null);
+    conf.overbought = common.parse_int(conf, 'overbought', !null);
 
-    this.stoch_period = common.parse_int(conf, 'stoch_period');
-    this.stoch_k = common.parse_int(conf, 'stoch_k');
-    this.stoch_d = common.parse_int(conf, 'stoch_d');
+    conf.stoch_period = common.parse_int(conf, 'stoch_period', !null);
+    conf.stoch_k = common.parse_int(conf, 'stoch_k', !null);
+    conf.stoch_d = common.parse_int(conf, 'stoch_d', !null);
 
-    this.min_up = common.parse_float(conf, 'min_up');
-    this.min_down = -Math.abs(common.parse_float(conf, 'min_down'));
+    conf.min_up = common.parse_float(conf, 'min_up', !null);
+    conf.min_down = -Math.abs(common.parse_float(conf, 'min_down', !null));
 
     ////////////////////
     this.trend = new trend;
@@ -47,7 +47,7 @@ strat.init = conf => {
 strat.print_line = (candle, rsi, stoch, color_date) => {
     this.table.with('Date', color_date)
         .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
-        .with('RSI', not_in(rsi, this.oversold, this.overbought, 
+        .with('RSI', not_in(rsi, this.conf.oversold, this.conf.overbought, 
             { below: green, above: red }))
         .with('K-D', comp_to(stoch.kd, 0))
         .print_line(candle.timestamp,
@@ -61,14 +61,14 @@ strat.print_line = (candle, rsi, stoch, color_date) => {
 strat.advise = trades => {
     var advice;
 
-    var ohlcv = ind.ohlcv(trades, this.frame);
+    var ohlcv = ind.ohlcv(trades, this.conf.frame);
     if(!ohlcv.length) return;
 
-    var rsi = ind.rsi(ohlcv.map(candle => candle.close), this.rsi_period);
+    var rsi = ind.rsi(ohlcv.map(candle => candle.close), this.conf.rsi_period);
     if(!rsi.length) return;
 
     var stoch = ind.stoch(rsi, rsi, rsi,
-        this.stoch_period, this.stoch_k, this.stoch_d
+        this.conf.stoch_period, this.conf.stoch_k, this.conf.stoch_d
     );
     if(!stoch.length) return;
     stoch = stoch.map(e => ({ k: e.k, d: e.d, kd: e.k - e.d })); // add K-D
@@ -79,7 +79,7 @@ strat.advise = trades => {
     var [ stoch_done, stoch_new ] = _.last(stoch, 2);
 
     // first time?
-    if(!('timestamp' in this)) {
+    if(_.isUndefined(this.timestamp)) {
         this.timestamp = candle_new.timestamp;
 
         // print head & preroll
@@ -105,11 +105,10 @@ strat.advise = trades => {
         strat.print_line(candle_done, rsi_done, stoch_done, blue);
 
         // Stoch-RSI
-             if(stoch_done.kd >= this.min_up) this.trend.state = 'up';
-        else if(stoch_done.kd <= this.min_down) this.trend.state = 'down';
+             if(stoch_done.kd >= this.conf.min_up) this.trend.state = 'up';
+        else if(stoch_done.kd <= this.conf.min_down) this.trend.state = 'down';
 
         advice = this.trend.advise(trade.timestamp, trade.price);
-        if(!_.isUndefined(advice)) advice.print();
     }
 
     // print current line

@@ -9,7 +9,7 @@ const table = root_require('table');
 const strat = {};
 
 strat.init = conf => {
-    this.frame = common.parse_period(conf, 'frame');
+    this.conf = conf;
 
     this.table = new table();
     this.table.add_column('Date'  , as_date , blue  );
@@ -21,7 +21,7 @@ strat.init = conf => {
 };
 
 strat.advise = trades => {
-    var ohlcv = ind.ohlcv(trades, this.frame);
+    var ohlcv = ind.ohlcv(trades, this.conf.frame);
     if(!ohlcv.length) return;
 
     console.log('Received', bold(ohlcv.length), 'OHLCV candles:');

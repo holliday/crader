@@ -8,6 +8,8 @@ const table = root_require('table');
 const strat = {};
 
 strat.init = conf => {
+    this.conf = conf;
+
     this.table = new table();
     this.table.add_column('Date'  , as_date      , blue  );
     this.table.add_column('Volume', as_vol       , yellow);

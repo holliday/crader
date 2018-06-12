@@ -19,6 +19,7 @@ class Advice {
         console.log('Advice:',
             (this.type == buy ? green : red)(this.type), '@', as_price(this.price, '-')
         );
+        console.log();
     }
 }
 

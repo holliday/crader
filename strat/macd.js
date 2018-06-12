@@ -12,14 +12,14 @@ const trend = root_require('trend');
 const strat = {};
 
 strat.init = conf => {
-    this.frame = common.parse_period(conf, 'frame');
+    this.conf = conf;
 
-    this.short_period  = common.parse_int(conf, 'short_period');
-    this.long_period   = common.parse_int(conf, 'long_period');
-    this.signal_period = common.parse_int(conf, 'signal_period');
+    conf.short_period  = common.parse_int(conf, 'short_period', !null);
+    conf.long_period   = common.parse_int(conf, 'long_period', !null);
+    conf.signal_period = common.parse_int(conf, 'signal_period', !null);
 
-    this.min_up = common.parse_float(conf, 'min_up');
-    this.min_down = -Math.abs(common.parse_float(conf, 'min_down'));
+    conf.min_up = common.parse_float(conf, 'min_up', !null);
+    conf.min_down = -Math.abs(common.parse_float(conf, 'min_down', !null));
 
     ////////////////////
     this.trend = new trend;
@@ -40,7 +40,7 @@ strat.init = conf => {
 strat.print_line = (candle, hist, color_date) => {
     this.table.with( 'Date', color_date)
         .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
-        .with('Hist', not_in(hist, this.min_down, this.min_up))
+        .with('Hist', not_in(hist, this.conf.min_down, this.conf.min_up))
         .print_line(candle.timestamp,
             candle.open, candle.high, candle.low, candle.close,
             candle.volume,
@@ -51,11 +51,11 @@ strat.print_line = (candle, hist, color_date) => {
 strat.advise = trades => {
     var advice;
 
-    var ohlcv = ind.ohlcv(trades, this.frame);
+    var ohlcv = ind.ohlcv(trades, this.conf.frame);
     if(!ohlcv.length) return;
 
     var macd = ind.macd(ohlcv.map(candle => candle.close),
-        this.short_period, this.long_period, this.signal_period
+        this.conf.short_period, this.conf.long_period, this.conf.signal_period
     );
     if(!macd.length) return;
 
@@ -64,7 +64,7 @@ strat.advise = trades => {
     var [ macd_done, macd_new ] = _.last(macd, 2);
 
     // first time?
-    if(!('timestamp' in this)) {
+    if(_.isUndefined(this.timestamp)) {
         this.timestamp = candle_new.timestamp;
 
         // print head & preroll
@@ -87,11 +87,10 @@ strat.advise = trades => {
         strat.print_line(candle_done, macd_done.histogram, blue);
 
         // MACD
-             if(macd_done.histogram >= this.min_up  ) this.trend.state = 'up';
-        else if(macd_done.histogram <= this.min_down) this.trend.state = 'down';
+             if(macd_done.histogram >= this.conf.min_up  ) this.trend.state = 'up';
+        else if(macd_done.histogram <= this.conf.min_down) this.trend.state = 'down';
 
         advice = this.trend.advise(trade.timestamp, trade.price);
-        if(!_.isUndefined(advice)) advice.print();
     }
 
     // print current line

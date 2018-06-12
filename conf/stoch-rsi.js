@@ -7,7 +7,7 @@ conf.strat = 'stoch-rsi';
 conf.frame = '15m';
 conf.count = 38; // rsi_period + stoch_period + stoch_k + stoch_d + 4
 
-// rsi settings
+// RSI settings
 conf.rsi_period = 14;
 
 conf.oversold = 20;
