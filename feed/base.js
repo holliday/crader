@@ -9,12 +9,13 @@ const common = root_require('common');
 class FeedBase extends EventEmitter {
     constructor(conf) {
         super();
+
         this.conf = conf;
+        this.conf.stop = false;
+        this.conf.step = 1000;
     }
 
     static async create(conf) {
-        conf.stop = false;
-        conf.step = 1000;
         return new FeedBase(conf);
     }
 
