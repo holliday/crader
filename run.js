@@ -9,9 +9,9 @@ const common = require('./common');
     common.read_args(conf);
     common.process(conf);
 
-    var feed   = new (common.local_require('feed', conf.feed))(conf);
-    var strat  = new (common.local_require('strat', 'base'))(conf);
-    var trader = new (common.local_require('trader', conf.trader))(conf);
+    var feed   = await common.local_require('feed', conf.feed).create(conf);
+    var strat  = await common.local_require('strat', 'base').create(conf);
+    var trader = await common.local_require('trader', conf.trader).create(conf);
 
     process.on('SIGINT' , () => conf.stop = true);
     process.on('SIGTERM', () => conf.stop = true);

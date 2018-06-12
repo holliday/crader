@@ -11,18 +11,21 @@ const sqlite = root_require('sqlite3');
 class CacheFeed extends FeedBase {
     constructor(conf) {
         super(conf); // captures conf
+        this.trades = [];
+    }
 
+    static async create(conf) {
         console.log('Creating', bold('cache'), 'feed');
 
-        this.conf.db_name = this.conf.exchange_name + '_' + this.conf.symbol.replace('/', '_');
-        console.log('Opening cache database:', bold(this.conf.db_name));
+        conf.db_name = conf.exchange_name + '_' + conf.symbol.replace('/', '_');
+        console.log('Opening cache database:', bold(conf.db_name));
 
-        this.conf.db = new sqlite('cache/' + this.conf.db_name + '.sqlite', { readonly: true });
-        this.conf.db_fetch = this.conf.db.prepare(`SELECT timestamp, price, amount
+        conf.db = new sqlite('cache/' + conf.db_name + '.sqlite', { readonly: true });
+        conf.db_fetch = conf.db.prepare(`SELECT timestamp, price, amount
             FROM data WHERE timestamp >= ? LIMIT 100000`
         );
 
-        this.trades = [];
+        return new CacheFeed(conf);
     }
 
     ////////////////////
