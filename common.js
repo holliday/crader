@@ -78,15 +78,14 @@ common.sleep_until = date => common.sleep_for(date - Date.now());
 ////////////////////
 common.local_require = (type, name) => {
     if(_.isUndefined(name)) throw new Error('Unspecified ' + type);
+
+    var path = type + '/' + name + '.js';
     try {
-        var path = type + '/' + name + '.js';
         fs.accessSync(path, fs.constants.R_OK);
-
-        return root_require(path);
-
     } catch(e) {
         throw new Error('Non-existent or inaccessible file ' + path);
     }
+    return root_require(path);
 }
 
 ////////////////////
