@@ -254,8 +254,6 @@ common.read_args = conf => {
                 break;
         }
     }
-
-    console.log('Merged conf:', conf);
 }
 
 ////////////////////
