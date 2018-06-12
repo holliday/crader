@@ -21,6 +21,7 @@ const common = require('./common');
     strat.on('advice', advice => trader.accept(advice));
 
     await feed.run();
+    trader.print_summary();
 
     console.log('DONE!');
     process.exit(0);
