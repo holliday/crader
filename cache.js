@@ -8,9 +8,12 @@ const sqlite = root_require('sqlite3');
 
 ////////////////////
 (async () => { try {
-    var conf = { frame: '1m', count: 1 };
+    var conf = {};
 
     common.read_args(conf);
+    conf.frame = '1m';
+    conf.count = 1;
+    console.log('Merged conf:', conf);
     common.process(conf);
 
     // set up database
