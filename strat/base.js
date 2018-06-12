@@ -14,7 +14,7 @@ class StratBase extends EventEmitter {
         common.parse(conf, 'strat', !null);
 
         console.log('Creating strat:', bold(conf.strat));
-        conf.strat_func = require('./' + conf.strat);
+        conf.strat_func = common.local_require('strat', conf.strat);
 
         console.log('Initializing strat');
         conf.strat_func.init(conf);
