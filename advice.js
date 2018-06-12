@@ -9,15 +9,15 @@ const buy = 'buy';
 const sell = 'sell';
 
 class Advice {
-    constructor(timestamp, price, type) {
+    constructor(type, timestamp, price) {
+        this.type = type;
         this.timestamp = timestamp;
         this.price = price;
-        this.type = type;
     }
 
     print() {
         console.log('Advice:',
-            (this.type == buy ? green : red)(this.type), '@', as_price(this.price, '-')
+            (this.type === buy ? green : red)(this.type), '@', as_price(this.price, '-')
         );
         console.log();
     }
@@ -26,14 +26,14 @@ class Advice {
 ////////////////////
 class BuyAdvice extends Advice {
     constructor(timestamp, price) {
-        super(timestamp, price, buy);
+        super(buy, timestamp, price);
     }
 }
 
 ////////////////////
 class SellAdvice extends Advice {
     constructor(timestamp, price) {
-        super(timestamp, price, sell);
+        super(sell, timestamp, price);
     }
 }
 
