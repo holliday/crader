@@ -2,12 +2,12 @@
 
 const _ = require('underscore');
 
-const advice = root_require('advice');
+const advice = root_require('lib/advice');
 const common = root_require('common');
 const ind = root_require('indicators');
 root_require('show');
 const table = root_require('table');
-const trend = root_require('trend');
+const trend = root_require('lib/trend');
 
 const strat = {};
 
@@ -19,7 +19,7 @@ strat.init = conf => {
     conf.overbought = common.parse_int(conf, 'overbought', !null);
 
     ////////////////////
-    this.trend = new trend;
+    this.trend = new trend();
     this.trend.add_state('oversold', advice.buy);
     this.trend.add_state('overbought', advice.sell);
 
@@ -86,7 +86,7 @@ strat.advise = trades => {
              if(rsi_done <= this.conf.oversold) this.trend.state = 'oversold';
         else if(rsi_done >= this.conf.overbought) this.trend.state = 'overbought';
 
-        advice = this.trend.advise(trade.timestamp, trade.price);
+        advice = this.trend.advise(trade.timestamp, this.conf.symbol, trade.price);
     }
 
     // print current line

@@ -1,6 +1,5 @@
 'use strict';
 
-const advice = root_require('advice');
 const ind = root_require('indicators');
 root_require('show');
 const table = root_require('table');

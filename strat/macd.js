@@ -2,12 +2,12 @@
 
 const _ = require('underscore');
 
-const advice = root_require('advice');
+const advice = root_require('lib/advice');
 const common = root_require('common');
 const ind = root_require('indicators');
 root_require('show');
 const table = root_require('table');
-const trend = root_require('trend');
+const trend = root_require('lib/trend');
 
 const strat = {};
 
@@ -22,7 +22,7 @@ strat.init = conf => {
     conf.min_down = -Math.abs(common.parse_float(conf, 'min_down', !null));
 
     ////////////////////
-    this.trend = new trend;
+    this.trend = new trend();
     this.trend.add_state('up', advice.buy);
     this.trend.add_state('down', advice.sell);
 
@@ -90,7 +90,7 @@ strat.advise = trades => {
              if(macd_done.histogram >= this.conf.min_up  ) this.trend.state = 'up';
         else if(macd_done.histogram <= this.conf.min_down) this.trend.state = 'down';
 
-        advice = this.trend.advise(trade.timestamp, trade.price);
+        advice = this.trend.advise(trade.timestamp, this.conf.symbol, trade.price);
     }
 
     // print current line
