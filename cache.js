@@ -18,7 +18,7 @@ const sqlite = root_require('sqlite3');
     common.process(conf);
 
     // set up database
-    var db_name = conf.exchange_name + '_' + conf.symbol.replace('/', '_');
+    var db_name = conf.exchange_name + '_' + conf.symbol.asset + '_' + conf.symbol.money;
     console.log('Opening cache database:', bold(db_name));
 
     var db = new sqlite('cache/' + db_name + '.sqlite');

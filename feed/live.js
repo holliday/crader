@@ -31,7 +31,7 @@ class LiveFeed extends FeedBase {
             throw new Error('Exchange does not provide trade data');
 
         await conf.exchange.loadMarkets();
-        if(!conf.exchange.symbols.includes(conf.symbol))
+        if(!conf.exchange.symbols.includes(conf.symbol.value))
             throw new Error('Invalid or unsupported symbol');
 
         return new LiveFeed(conf);
@@ -45,7 +45,7 @@ class LiveFeed extends FeedBase {
 
             var trades;
             for(;;) try {
-                trades = await this.conf.exchange.fetchTrades(this.conf.symbol, since);
+                trades = await this.conf.exchange.fetchTrades(this.conf.symbol.value, since);
                 break;
             } catch(e) {
                 console.error(e);

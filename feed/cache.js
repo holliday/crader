@@ -17,7 +17,7 @@ class CacheFeed extends FeedBase {
     static async create(conf) {
         console.log('Creating', bold('cache'), 'feed');
 
-        conf.db_name = conf.exchange_name + '_' + conf.symbol.replace('/', '_');
+        conf.db_name = conf.exchange_name + '_' + conf.symbol.asset + '_' + conf.symbol.money;
         console.log('Opening cache database:', bold(conf.db_name));
 
         conf.db = new sqlite('cache/' + conf.db_name + '.sqlite', { readonly: true });

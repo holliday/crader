@@ -9,6 +9,7 @@ const options = require('minimist-options');
 const path = require('path');
 
 root_require('show');
+const symbol = root_require('lib/symbol');
 
 const common = {};
 
@@ -133,8 +134,8 @@ const opts = options({
     trader  : { type: 'string' ,            },
     real    : { type: 'boolean',            }, // shorthand for --trader=real
     paper   : { type: 'boolean',            }, // shorthand for --trader=paper
-    assets  : { type: 'string' , alias: 'a' },
-    currency: { type: 'string' , alias: 'c' },
+    asset   : { type: 'string' , alias: 'a' },
+    money   : { type: 'string' , alias: 'm' },
 });
 
 ////////////////////
@@ -169,8 +170,8 @@ Where [option] is one of:
         --trader=<name>     Trader name
         --paper             Shorthand for --trader=paper
         --real              Shorthand for --trader=real
-    -a, --assets=<n>        Starting assets (paper trader)
-    -c, --currency=<n>      Starting currency (paper trader)
+    -a, --asset=<n>         Starting asset amount (paper trader)
+    -m, --money=<n>         Starting money amount (paper trader)
 
         ...                 Conf-specific options
 
@@ -263,8 +264,8 @@ common.process = conf => {
     delete conf.exchange;
     console.log('Exchange:', bold(conf.exchange_name));
 
-    conf.symbol = common.parse(conf, 'symbol', !null);
-    console.log('Symbol:', bold(conf.symbol));
+    conf.symbol = new symbol(common.parse(conf, 'symbol', !null));
+    console.log('Symbol:', conf.symbol.as_value());
 
     conf.frame = common.parse_period(conf, 'frame', !null);
     conf.count = common.parse_int(conf, 'count', !null);
