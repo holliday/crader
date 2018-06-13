@@ -1,7 +1,7 @@
 'use strict';
 
 const common = root_require('common');
-const ind = root_require('indicators');
+const ind = root_require('lib/ind'); // indicators
 root_require('lib/show');
 const table = root_require('lib/table');
 
