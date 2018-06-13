@@ -4,7 +4,7 @@ const _ = require('underscore');
 const ccxt = require('ccxt');
 
 const FeedBase = root_require('feed/base');
-root_require('show');
+root_require('lib/show');
 
 ////////////////////
 class LiveFeed extends FeedBase {

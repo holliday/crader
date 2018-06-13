@@ -4,7 +4,7 @@ const _ = require('underscore');
 
 const common = root_require('common');
 const FeedBase = root_require('feed/base');
-root_require('show');
+root_require('lib/show');
 const sqlite = root_require('lib/sqlite');
 
 ////////////////////

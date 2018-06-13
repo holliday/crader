@@ -1,7 +1,7 @@
 'use strict';
 
 const ind = root_require('indicators');
-root_require('show');
+root_require('lib/show');
 const table = root_require('table');
 
 const strat = {};

@@ -4,7 +4,7 @@ const _ = require('underscore');
 const EventEmitter = require('events');
 
 const common = root_require('common');
-root_require('show');
+root_require('lib/show');
 
 ////////////////////
 class StratBase extends EventEmitter {

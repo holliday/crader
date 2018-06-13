@@ -3,7 +3,7 @@
 const _ = require('underscore');
 
 const common = require('./common');
-root_require('show');
+root_require('lib/show');
 const sqlite = root_require('lib/sqlite');
 
 ////////////////////
