@@ -4,7 +4,7 @@ const _ = require('underscore');
 
 const common = require('./common');
 root_require('show');
-const sqlite = root_require('sqlite3');
+const sqlite = root_require('lib/sqlite');
 
 ////////////////////
 (async () => { try {

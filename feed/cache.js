@@ -5,7 +5,7 @@ const _ = require('underscore');
 const common = root_require('common');
 const FeedBase = root_require('feed/base');
 root_require('show');
-const sqlite = root_require('sqlite3');
+const sqlite = root_require('lib/sqlite');
 
 ////////////////////
 class CacheFeed extends FeedBase {
