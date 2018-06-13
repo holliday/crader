@@ -38,10 +38,10 @@ strat.init = conf => {
     this.table.add_column('Low'   , as_price);
     this.table.add_column('Close' , as_price);
     this.table.add_column('Volume', as_vol, yellow);
-    this.table.add_column('RSI'   , as_num);
+    this.table.add_column('RSI'   , as_num  );
     this.table.add_column('K'     , as_fixed, cyan);
     this.table.add_column('D'     , as_fixed, magenta);
-    this.table.add_column('K-D'   , as_fixed, '+-');
+    this.table.add_column('K-D'   , as_fixed, '+');
 };
 
 strat.print_line = (candle, rsi, stoch, color_date) => {
