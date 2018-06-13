@@ -6,7 +6,7 @@ const advice = root_require('lib/advice');
 const common = root_require('common');
 const ind = root_require('indicators');
 root_require('lib/show');
-const table = root_require('table');
+const table = root_require('lib/table');
 const trend = root_require('lib/trend');
 
 const strat = {};

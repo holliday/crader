@@ -2,7 +2,7 @@
 
 const ind = root_require('indicators');
 root_require('lib/show');
-const table = root_require('table');
+const table = root_require('lib/table');
 
 const strat = {};
 
