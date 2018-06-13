@@ -20,7 +20,7 @@ class CacheFeed extends FeedBase {
         conf.db_name = conf.exchange_name + '_' + conf.symbol.asset + '_' + conf.symbol.money;
         console.log('Opening cache database:', bold(conf.db_name));
 
-        conf.db = new sqlite('cache/' + conf.db_name + '.sqlite', { readonly: true });
+        conf.db = new sqlite('cache/' + conf.db_name + '.sqlite');
         conf.db_fetch = conf.db.prepare(`SELECT timestamp, price, amount
             FROM data WHERE timestamp >= ? LIMIT 100000`
         );
