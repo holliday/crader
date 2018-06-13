@@ -31,14 +31,17 @@ class TraderBase extends EventEmitter {
 
     ////////////////////
     _print_balance(type, asset, money) {
-        console.log(type, 'balance:',
-            this.conf.symbol.as_asset(), as_vol(asset, '-').trim(),
-            this.conf.symbol.as_money(), as_price(money, '-').trim()
+        console.log(
+            type, 'balance:',
+            this.conf.symbol.as_asset(), as_vol(asset).trim(),
+            this.conf.symbol.as_money(), as_price(money).trim()
         );
     }
 
     print_init_balance() {
-        this._print_balance('Starting', this.conf.init_asset, this.conf.init_money);
+        this._print_balance('Starting',
+            this.conf.init_asset, this.conf.init_money
+        );
     }
 
     print_balance(type = 'Current') {
@@ -64,7 +67,23 @@ class TraderBase extends EventEmitter {
 
     ////////////////////
     print_performance() {
-        console.log('Performance:');
+        var conf = this.conf;
+
+        var init_value = conf.init_asset * conf.init_price + conf.init_money;
+        var value = conf.asset * conf.price + conf.money;
+        var hold_value = conf.init_asset * conf.price + conf.init_money;
+
+        var perf = 100 * (value / init_value - 1);
+        var perf_hold = 100 * (value / hold_value - 1);
+
+        console.log(
+            bold('Performance:'), !_.isUndefined(perf)
+                ? comp_to(perf, 0)(as_num(perf, '+').trim()+'%')
+                : '',
+            gray('compared to buy+hold:'), !_.isUndefined(perf_hold)
+                ? comp_to(perf_hold, 0)(as_num(perf_hold, '+').trim()+'%')
+                : '',
+        );
     }
 
     ////////////////////
