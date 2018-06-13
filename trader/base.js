@@ -31,24 +31,18 @@ class TraderBase extends EventEmitter {
 
     ////////////////////
     _print_balance(type, asset, money) {
-        console.log(type);
-        console.log(
-            this.conf.symbol.as_asset(), as_vol(asset, '-'),
-            this.conf.symbol.as_money(), as_price(money, '-')
+        console.log(type, 'balance:',
+            this.conf.symbol.as_asset(), as_vol(asset, '-').trim(),
+            this.conf.symbol.as_money(), as_price(money, '-').trim()
         );
     }
 
     print_init_balance() {
-        this._print_balance('Starting balance:',
-            this.conf.init_asset, this.conf.init_money
-        );
-        console.log();
+        this._print_balance('Starting', this.conf.init_asset, this.conf.init_money);
     }
 
-    print_balance() {
-        this._print_balance(bold('Current balance:'),
-            this.conf.asset, this.conf.money);
-        console.log();
+    print_balance(type = 'Current') {
+        this._print_balance(type, this.conf.asset, this.conf.money);
     }
 
     ////////////////////
@@ -87,7 +81,7 @@ class TraderBase extends EventEmitter {
             this.print_init_balance();
             this.print_trades();
         }
-        this.print_balance();
+        this.print_balance('Ending');
         this.print_performance();
     }
 };
