@@ -1,10 +1,7 @@
 'use strict';
 require('./core');
 
-const _ = require('underscore');
-
 const common = root_require('common');
-root_require('core');
 root_require('lib/show');
 const sqlite = root_require('lib/sqlite');
 
@@ -69,7 +66,7 @@ const sqlite = root_require('lib/sqlite');
             console.log('Cached', as_int(trades.length), 'trades:',
                 blue(as_date(trades[0].timestamp)),
                 '-',
-                blue(as_date(_.last(trades).timestamp)),
+                blue(as_date(trades.end().timestamp)),
             );
 
             db.commit();
