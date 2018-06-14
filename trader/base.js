@@ -10,10 +10,9 @@ const trade = root_require('lib/trade');
 class TraderBase extends EventEmitter {
     constructor(conf) {
         super();
-
         this.conf = conf;
 
-        if(this.conf.init_asset < 0.0001 && this.conf.init_money < 0.01)
+        if(conf.init_asset < 0.0001 && conf.init_money < 0.01)
             console.log(bg_yellow('You are broke!'));
         this.print_init_balance();
 
