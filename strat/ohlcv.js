@@ -21,7 +21,6 @@ strat.init = conf => {
 
 strat.advise = trades => {
     var ohlcv = ind.ohlcv(trades, this.conf.frame);
-    if(!ohlcv.length) return;
 
     console.log('Received', bold(ohlcv.length), 'OHLCV candles:');
 
