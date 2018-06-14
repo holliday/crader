@@ -1,8 +1,8 @@
 'use strict';
 
-const _ = require('underscore');
 const EventEmitter = require('events');
 
+root_require('core');
 root_require('lib/show');
 const trade = root_require('lib/trade');
 
@@ -76,10 +76,12 @@ class TraderBase extends EventEmitter {
         var perf_hold = 100 * (value / hold_value - 1);
 
         console.log(
-            bold('Performance:'), !_.isUndefined(perf)
+            bold('Performance:'),
+            is_def(perf)
                 ? comp_to(perf, 0)(as_num(perf, '+').trim()+'%')
                 : '',
-            gray('compared to buy+hold:'), !_.isUndefined(perf_hold)
+            gray('compared to buy+hold:'),
+            is_def(perf_hold)
                 ? comp_to(perf_hold, 0)(as_num(perf_hold, '+').trim()+'%')
                 : '',
         );

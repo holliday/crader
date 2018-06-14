@@ -3,6 +3,8 @@
 const _ = require('underscore');
 const EventEmitter = require('events');
 
+root_require('core');
+
 ////////////////////
 class FeedBase extends EventEmitter {
     constructor(conf) {
@@ -12,7 +14,7 @@ class FeedBase extends EventEmitter {
         conf.step = 1000;
         conf.stop = false;
 
-        this.time = _.isUndefined(conf.start) ? Date.now() : conf.start;
+        this.time = is_def(conf.start) ? conf.start : Date.now();
         this.trades = [];
     }
 
@@ -38,7 +40,7 @@ class FeedBase extends EventEmitter {
         );
 
         if(trades.length) {
-            if(_.isUndefined(this.conf.init_price))
+            if(!is_def(this.conf.init_price))
                 this.conf.init_price = trades[0].price;
             this.conf.price = _.last(trades).price;
         }

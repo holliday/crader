@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('underscore');
-
 const advice = root_require('lib/advice');
 const common = root_require('common');
 root_require('lib/show');

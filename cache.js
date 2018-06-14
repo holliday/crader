@@ -1,8 +1,10 @@
 'use strict';
+require('./core');
 
 const _ = require('underscore');
 
-const common = require('./common');
+const common = root_require('common');
+root_require('core');
 root_require('lib/show');
 const sqlite = root_require('lib/sqlite');
 
@@ -35,7 +37,7 @@ const sqlite = root_require('lib/sqlite');
     );
 
     // if no start, get the last timestamp from the database
-    if(_.isUndefined(conf.start)) {
+    if(!is_def(conf.start)) {
         var trade = db.prepare(`SELECT * FROM data
             ORDER BY timestamp DESC LIMIT 1;`
         ).all();
@@ -65,7 +67,7 @@ const sqlite = root_require('lib/sqlite');
             });
 
             console.log('Cached', as_int(trades.length), 'trades:',
-                blue(as_date(_.first(trades).timestamp)),
+                blue(as_date(trades[0].timestamp)),
                 '-',
                 blue(as_date(_.last(trades).timestamp)),
             );

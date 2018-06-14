@@ -1,62 +1,28 @@
 'use strict';
-global.root_require = name => require(__dirname + '/' + name);
 
-const _ = require('underscore');
 const fs = require('fs');
 require('manakin').global; // color console
 const minimist = require('minimist');
 const options = require('minimist-options');
 const path = require('path');
 
+root_require('core');
 root_require('lib/show');
 const symbol = root_require('lib/symbol');
 
 const common = {};
 
-////////////////////
-// convert value with optional suffix to time period
-// suffix can be one of:
-// s - seconds
-// m - minutes
-// h - hours
-// d - days
-// w - weeks
-// <no suffix> - milliseconds
-global.parsePeriod = value => {
-    const mult = {
-        s: 1000,
-        m: 60 * 1000,
-        h: 60 * 60 * 1000,
-        d: 24 * 60 * 60 * 1000,
-        w:  7 * 24 * 60 * 60 * 1000,
-    };
-
-    value = String(value);
-    var suffix = value.slice(-1);
-
-    if(suffix in mult)
-        value = parseFloat(value.slice(0, -1)) * mult[suffix];
-    else if('0123456789'.includes(suffix))
-        value = parseFloat(value);
-    else value = NaN;
-
-    return Math.trunc(value);
-}
-
-// convert value to timestamp
-global.parseDate = value => (new Date(value)).getTime();
-
 // parse generic value from conf
 common.parse = (conf, name, not_null) => {
     var value = conf[name];
-    if(not_null && _.isUndefined(value)) throw new Error('Unspecified ' + name);
+    if(not_null && !is_def(value)) throw new Error('Unspecified ' + name);
 
     return value;
 };
 
 function _parse_num(call, conf, name, not_null) {
     var value = conf[name];
-    if(_.isUndefined(value)) {
+    if(!is_def(value)) {
         if(not_null) throw new Error('Unspecified ' + name);
         else return value;
     }
@@ -67,18 +33,14 @@ function _parse_num(call, conf, name, not_null) {
 }
 
 // parse numeric value from conf
-common.parse_int    = (conf, name, not_null) => _parse_num(parseInt   , conf, name, not_null);
-common.parse_float  = (conf, name, not_null) => _parse_num(parseFloat , conf, name, not_null);
-common.parse_period = (conf, name, not_null) => _parse_num(parsePeriod, conf, name, not_null);
-common.parse_date   = (conf, name, not_null) => _parse_num(parseDate  , conf, name, not_null);
-
-////////////////////
-common.sleep_for = interval => new Promise(resolve => setTimeout(resolve, interval));
-common.sleep_until = date => common.sleep_for(date - Date.now());
+common.parse_int    = (conf, name, not_null) => _parse_num(parseInt    , conf, name, not_null);
+common.parse_float  = (conf, name, not_null) => _parse_num(parseFloat  , conf, name, not_null);
+common.parse_period = (conf, name, not_null) => _parse_num(parse_period, conf, name, not_null);
+common.parse_date   = (conf, name, not_null) => _parse_num(parse_date  , conf, name, not_null);
 
 ////////////////////
 common.local_require = (type, name) => {
-    if(_.isUndefined(name)) throw new Error('Unspecified ' + type);
+    if(!is_def(name)) throw new Error('Unspecified ' + type);
 
     var path = type + '/' + name + '.js';
     try {
@@ -275,14 +237,12 @@ common.process = conf => {
     conf.end = common.parse_period(conf, 'end');
     conf.period = common.parse_date(conf, 'end');
 
-    const defined = x => !_.isUndefined(x);
-
-    if(defined(conf.start)) {
-        if(defined(conf.end)) {
-            if(defined(conf.period))
+    if(is_def(conf.start)) {
+        if(is_def(conf.end)) {
+            if(is_def(conf.period))
                 throw new Error('Invalid start/end/period combination');
 
-        } else if(defined(conf.period)) {
+        } else if(is_def(conf.period)) {
             if(conf.period < 1000) throw new Error('Invalid period');
 
             conf.end = conf.start + conf.period;
@@ -290,8 +250,8 @@ common.process = conf => {
 
         } // else conf.end = undefined;
 
-    } else if(defined(conf.end)) {
-        if(defined(conf.period)) {
+    } else if(is_def(conf.end)) {
+        if(is_def(conf.period)) {
             if(conf.period < 1000) throw new Error('Invalid period');
 
             conf.start = conf.end - conf.period;
@@ -299,7 +259,7 @@ common.process = conf => {
 
         } // else conf.start = undefined;
 
-    } else if(defined(conf.period)) {
+    } else if(is_def(conf.period)) {
         if(conf.period <= 1000) {
             conf.end = Date.now();
             conf.start = conf.end + conf.period;
@@ -315,9 +275,9 @@ common.process = conf => {
     } // else conf.start = conf.end = undefined;
 
     console.log('Interval:',
-        defined(conf.start) ? bold(as_date(conf.start)) : "...",
+        is_def(conf.start) ? bold(as_date(conf.start)) : "...",
         'to',
-        defined(conf.end) ? bold(as_date(conf.end)) : '...'
+        is_def(conf.end) ? bold(as_date(conf.end)) : '...'
     );
 };
 

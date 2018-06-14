@@ -4,6 +4,7 @@ const _ = require('underscore');
 
 const advice = root_require('lib/advice');
 const common = root_require('common');
+root_require('core');
 const ind = root_require('lib/ind'); // indicators
 root_require('lib/show');
 const table = root_require('lib/table');
@@ -60,7 +61,7 @@ strat.advise = trades => {
     var [ rsi_done, rsi_new ] = _.last(rsi, 2);
 
     // first time?
-    if(_.isUndefined(this.timestamp)) {
+    if(!is_def(this.timestamp)) {
         this.timestamp = candle_new.timestamp;
 
         // print head & preroll

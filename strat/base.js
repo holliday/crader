@@ -1,9 +1,9 @@
 'use strict';
 
-const _ = require('underscore');
 const EventEmitter = require('events');
 
 const common = root_require('common');
+root_require('core');
 root_require('lib/show');
 
 ////////////////////
@@ -28,7 +28,7 @@ class StratBase extends EventEmitter {
     ////////////////////
     advise(trades) {
         var advice = this.conf.strat_func.advise(trades);
-        if(!_.isUndefined(advice)) {
+        if(is_def(advice)) {
             advice.print();
             this.emit('advice', advice);
         }
