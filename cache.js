@@ -50,6 +50,9 @@ const sqlite = root_require('lib/sqlite');
     var feed = await common.local_require('feed', 'live').create(conf);
     conf.step = conf.frame * conf.count;
 
+    process.on('SIGINT' , () => conf.stop = true);
+    process.on('SIGTERM', () => conf.stop = true);
+
     // rock-n-roll
     feed.on('trades', trades => {
         if(!trades.length) return;
@@ -72,13 +75,11 @@ const sqlite = root_require('lib/sqlite');
             if(db.inTransaction) db.rollback();
         }
     });
+    feed.on('done', () => console.log('DONE'));
+
     await feed.run();
 
-    console.log('DONE!');
-    process.exit(0);
-
 } catch(e) {
-    console.error(e);
+    console.error(e.message);
     process.exit(1);
-
 } })();
