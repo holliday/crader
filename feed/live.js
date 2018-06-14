@@ -10,7 +10,6 @@ root_require('lib/show');
 class LiveFeed extends FeedBase {
     constructor(conf) {
         super(conf); // captures conf
-        this.trades = [];
     }
 
     static async create(conf) {

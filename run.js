@@ -10,24 +10,20 @@ const common = require('./common');
     console.log('Merged conf:', conf);
     common.process(conf);
 
-    var feed   = await common.local_require('feed', conf.feed).create(conf);
-    var strat  = await common.local_require('strat', 'base').create(conf);
-    var trader = await common.local_require('trader', conf.trader).create(conf);
+    var f = await common.local_require('feed', conf.feed).create(conf);
+    var s = await common.local_require('strat', 'base').create(conf);
+    var t = await common.local_require('trader', conf.trader).create(conf);
 
     process.on('SIGINT' , () => conf.stop = true);
     process.on('SIGTERM', () => conf.stop = true);
 
-    feed.on('trades', trades => strat.advise(trades));
-    strat.on('advice', advice => trader.accept(advice));
+    f.on('trades', trades => s.advise(trades));
+    f.on('done'  , ()     => t.print_summary());
+    s.on('advice', advice => t.accept(advice));
 
-    await feed.run();
-    trader.print_summary();
-
-    console.log('DONE!');
-    process.exit(0);
+    await f.run();
 
 } catch(e) {
     console.error(e.message);
     process.exit(1);
-
 } })();
