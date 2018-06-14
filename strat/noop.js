@@ -15,8 +15,6 @@ strat.init = conf => {
 };
 
 strat.advise = trades => {
-    if(!trades.length) return;
-
     console.log('Received', bold(trades.length), 'trades:');
 
     this.table.with('*', white).print_head();
