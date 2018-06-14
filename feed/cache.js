@@ -1,9 +1,8 @@
 'use strict';
 
-const _ = require('underscore');
-
 const common = root_require('common');
 const FeedBase = root_require('feed/base');
+const Series = root_require('lib/series');
 root_require('lib/show');
 const sqlite = root_require('lib/sqlite');
 
@@ -11,6 +10,7 @@ const sqlite = root_require('lib/sqlite');
 class CacheFeed extends FeedBase {
     constructor(conf) {
         super(conf); // captures conf
+        this.trades = new Series();
     }
 
     static async create(conf) {
@@ -30,7 +30,7 @@ class CacheFeed extends FeedBase {
     ////////////////////
     async fetch_trades(from, to) {
         for(;;) {
-            var since = this.trades.length ? _.last(this.trades).timestamp + 1 : from;
+            var since = this.trades.length ? this.trades.end().timestamp + 1 : from;
             if(since > to) break;
 
             var trades;
@@ -38,11 +38,11 @@ class CacheFeed extends FeedBase {
                 trades = this.conf.db_fetch.all(since);
                 break;
             } catch(e) {
-                console.error(e);
-                await common.sleep_for(this.conf.step);
+                console.error(e.message);
+                await sleep_for(this.conf.step);
             }
             if(!trades.length) {
-                await common.sleep_for(this.conf.step);
+                await sleep_for(this.conf.step);
                 break;
             }
 

@@ -4,12 +4,14 @@ const _ = require('underscore');
 const ccxt = require('ccxt');
 
 const FeedBase = root_require('feed/base');
+const Series = root_require('lib/series');
 root_require('lib/show');
 
 ////////////////////
 class LiveFeed extends FeedBase {
     constructor(conf) {
         super(conf); // captures conf
+        this.trades = new Series();
     }
 
     static async create(conf) {
@@ -39,7 +41,7 @@ class LiveFeed extends FeedBase {
     ////////////////////
     async fetch_trades(from, to) {
         for(;;) {
-            var since = this.trades.length ? _.last(this.trades).timestamp + 1 : from;
+            var since = this.trades.length ? this.trades.end().timestamp + 1 : from;
             if(since > to) break;
 
             var trades;
@@ -47,7 +49,7 @@ class LiveFeed extends FeedBase {
                 trades = await this.conf.exchange.fetchTrades(this.conf.symbol.value, since);
                 break;
             } catch(e) {
-                console.error(e);
+                console.error(e.message);
             }
             if(!trades.length) break;
 
@@ -59,7 +61,7 @@ class LiveFeed extends FeedBase {
 
             // remove duplicates
             while(this.trades.length
-                && _.last(this.trades).timestamp >= trades[0].timestamp
+                && this.trades.end().timestamp >= trades[0].timestamp
             ) this.trades.pop();
 
             this.trades.push(...trades);
