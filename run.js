@@ -1,7 +1,7 @@
 'use strict';
 require('./core');
 
-const common = root_require('common');
+const common = root_require('lib/common');
 
 ////////////////////
 (async () => { try {

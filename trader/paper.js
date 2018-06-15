@@ -1,9 +1,9 @@
 'use strict';
 
 const advice = root_require('lib/advice');
-const common = root_require('common');
-root_require('lib/show');
-const trade = root_require('lib/trade');
+const common = root_require('lib/common');
+               root_require('lib/show');
+const trade  = root_require('lib/trade');
 const TraderBase = root_require('trader/base');
 
 ////////////////////

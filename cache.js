@@ -1,8 +1,8 @@
 'use strict';
 require('./core');
 
-const common = root_require('common');
-root_require('lib/show');
+const common = root_require('lib/common');
+               root_require('lib/show');
 const sqlite = root_require('lib/sqlite');
 
 ////////////////////
