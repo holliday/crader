@@ -10,9 +10,6 @@ conf.count = 38; // rsi_period + stoch_period + stoch_k + stoch_d + 4
 // RSI settings
 conf.rsi_period = 14;
 
-conf.oversold = 20;
-conf.overbought = 80;
-
 // stoch settings
 conf.stoch_period = 14;
 conf.stoch_k = 3; // sma period
