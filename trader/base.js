@@ -93,7 +93,6 @@ class TraderBase extends EventEmitter {
         console.log(
 `
 
-
 ----=[ Summary ]=---------------------------------------------------------------
 `
         );
@@ -101,6 +100,11 @@ class TraderBase extends EventEmitter {
         this.print_trades();
         this.print_balance('Ending');
         this.print_performance();
+        console.log(
+`
+--------------------------------------------------------------------------------
+`
+        );
     }
 };
 
