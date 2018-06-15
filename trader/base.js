@@ -1,9 +1,8 @@
 'use strict';
 
 const EventEmitter = require('events');
-
-root_require('lib/show');
-const trade = root_require('lib/trade');
+const as           = root_require('lib/as');
+const trade        = root_require('lib/trade');
 
 ////////////////////
 class TraderBase extends EventEmitter {
@@ -12,7 +11,7 @@ class TraderBase extends EventEmitter {
         this.conf = conf;
 
         if(conf.init_asset < 0.0001 && conf.init_money < 0.01)
-            console.log(bg_yellow('You are broke!'));
+            console.log(as.bg_yellow('You are broke!'));
         this.print_init_balance();
 
         this.trades = [];
@@ -31,8 +30,8 @@ class TraderBase extends EventEmitter {
     _print_balance(type, asset, money) {
         console.log(
             type, 'balance:',
-            this.conf.symbol.as_asset(), as_vol(asset).trim(),
-            this.conf.symbol.as_money(), as_price(money).trim()
+            this.conf.symbol.as_asset(), as.vol(asset).trim(),
+            this.conf.symbol.as_money(), as.price(money).trim()
         );
     }
 
@@ -75,13 +74,13 @@ class TraderBase extends EventEmitter {
         var perf_hold = 100 * (value / hold_value - 1);
 
         console.log(
-            bold('Performance:'),
+            as.bold('Performance:'),
             is_def(perf)
-                ? comp_to(perf, 0)(as_num(perf, '+').trim()+'%')
+                ? as.comp_to(perf, 0)(as.num(perf, '+').trim()+'%')
                 : '',
-            gray('compared to buy+hold:'),
+            as.gray('compared to buy+hold:'),
             is_def(perf_hold)
-                ? comp_to(perf_hold, 0)(as_num(perf_hold, '+').trim()+'%')
+                ? as.comp_to(perf_hold, 0)(as.num(perf_hold, '+').trim()+'%')
                 : '',
         );
     }

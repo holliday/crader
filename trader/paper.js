@@ -1,9 +1,9 @@
 'use strict';
 
-const advice = root_require('lib/advice');
-const common = root_require('lib/common');
-               root_require('lib/show');
-const trade  = root_require('lib/trade');
+const advice     = root_require('lib/advice');
+const as         = root_require('lib/as');
+const common     = root_require('lib/common');
+const trade      = root_require('lib/trade');
 const TraderBase = root_require('trader/base');
 
 ////////////////////
@@ -13,7 +13,7 @@ class PaperTrader extends TraderBase {
     }
 
     static async create(conf) {
-        console.log('Creating', bold('paper'), 'trader');
+        console.log('Creating', as.bold('paper'), 'trader');
 
         conf.init_asset = common.parse_float(conf, 'asset');
         if(isNaN(conf.init_asset)) conf.init_asset = 0;

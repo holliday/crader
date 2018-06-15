@@ -1,7 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
-const Series = root_require('lib/series');
+const Series       = root_require('lib/series');
 
 ////////////////////
 class FeedBase extends EventEmitter {

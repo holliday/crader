@@ -1,10 +1,9 @@
 'use strict';
 
-const ccxt = require('ccxt');
-
+const ccxt     = require('ccxt');
 const FeedBase = root_require('feed/base');
-const Series = root_require('lib/series');
-root_require('lib/show');
+const as       = root_require('lib/as');
+const Series   = root_require('lib/series');
 
 ////////////////////
 class LiveFeed extends FeedBase {
@@ -14,7 +13,7 @@ class LiveFeed extends FeedBase {
     }
 
     static async create(conf) {
-        console.log('Creating', bold('live'), 'feed');
+        console.log('Creating', as.bold('live'), 'feed');
 
         if(!ccxt.exchanges.includes(conf.exchange_name))
             throw new Error('Unspecified or invalid exchange');

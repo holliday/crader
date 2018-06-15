@@ -1,9 +1,9 @@
 'use strict';
 
 const FeedBase = root_require('feed/base');
-const Series = root_require('lib/series');
-root_require('lib/show');
-const sqlite = root_require('lib/sqlite');
+const as       = root_require('lib/as');
+const Series   = root_require('lib/series');
+const sqlite   = root_require('lib/sqlite');
 
 ////////////////////
 class CacheFeed extends FeedBase {
@@ -13,10 +13,10 @@ class CacheFeed extends FeedBase {
     }
 
     static async create(conf) {
-        console.log('Creating', bold('cache'), 'feed');
+        console.log('Creating', as.bold('cache'), 'feed');
 
         conf.db_name = conf.exchange_name + '_' + conf.symbol.asset + '_' + conf.symbol.money;
-        console.log('Opening cache database:', bold(conf.db_name));
+        console.log('Opening cache database:', as.bold(conf.db_name));
 
         conf.db = new sqlite('cache/' + conf.db_name + '.sqlite');
         conf.db_fetch = conf.db.prepare(`SELECT timestamp, price, amount

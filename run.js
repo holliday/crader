@@ -11,18 +11,18 @@ const common = root_require('lib/common');
     console.log('Merged conf:', conf);
     common.process(conf);
 
-    var f = await common.local_require('feed', conf.feed).create(conf);
-    var s = await common.local_require('strat', 'base').create(conf);
-    var t = await common.local_require('trader', conf.trader).create(conf);
+    var feed = await common.local_require('feed', conf.feed).create(conf);
+    var strat = await common.local_require('strat', 'base').create(conf);
+    var trader = await common.local_require('trader', conf.trader).create(conf);
 
     process.on('SIGINT' , () => conf.stop = true);
     process.on('SIGTERM', () => conf.stop = true);
 
-    f.on('trades', trades => s.advise(trades));
-    f.on('done'  , ()     => t.print_summary());
-    s.on('advice', advice => t.accept(advice));
+    feed.on ('trades', trades => strat.advise(trades));
+    feed.on ('done'  , ()     => trader.print_summary());
+    strat.on('advice', advice => trader.accept(advice));
 
-    await f.run();
+    await feed.run();
 
 } catch(e) {
     console.error(e.message);

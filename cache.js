@@ -1,8 +1,8 @@
 'use strict';
 require('./core');
 
+const as     = root_require('lib/as');
 const common = root_require('lib/common');
-               root_require('lib/show');
 const sqlite = root_require('lib/sqlite');
 
 ////////////////////
@@ -18,7 +18,7 @@ const sqlite = root_require('lib/sqlite');
 
     // set up database
     var db_name = conf.exchange_name + '_' + conf.symbol.asset + '_' + conf.symbol.money;
-    console.log('Opening cache database:', bold(db_name));
+    console.log('Opening cache database:', as.bold(db_name));
 
     var db = new sqlite('cache/' + db_name + '.sqlite');
 
@@ -41,7 +41,7 @@ const sqlite = root_require('lib/sqlite');
 
         if(trade.length) {
             conf.start = trade[0].timestamp;
-            console.log('Resuming from:', bold(as_date(conf.start)));
+            console.log('Resuming from:', as.bold(as.date(conf.start)));
         }
     }
 
@@ -59,14 +59,14 @@ const sqlite = root_require('lib/sqlite');
         db.begin();
         try {
             trades.forEach(trade => {
-                Object.assign(trade, { date: as_date(trade.timestamp) });
+                Object.assign(trade, { date: as.date(trade.timestamp) });
                 db_insert.run(trade);
             });
 
-            console.log('Cached', as_int(trades.length), 'trades:',
-                blue(as_date(trades[0].timestamp)),
+            console.log('Cached', as.int(trades.length), 'trades:',
+                as.blue(as.date(trades[0].timestamp)),
                 '-',
-                blue(as_date(trades.end().timestamp)),
+                as.blue(as.date(trades.end().timestamp)),
             );
 
             db.commit();
