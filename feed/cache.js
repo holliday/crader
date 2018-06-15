@@ -1,6 +1,5 @@
 'use strict';
 
-const common = root_require('common');
 const FeedBase = root_require('feed/base');
 const Series = root_require('lib/series');
 root_require('lib/show');

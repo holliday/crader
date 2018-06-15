@@ -6,7 +6,6 @@ const minimist = require('minimist');
 const options = require('minimist-options');
 const path = require('path');
 
-root_require('core');
 root_require('lib/show');
 const symbol = root_require('lib/symbol');
 

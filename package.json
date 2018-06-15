@@ -18,7 +18,6 @@
     "minimist-options": "^3.0.2",
     "moment": "^2.22.2",
     "sprintf-js": "^1.1.1",
-    "tulind": "^0.8.10",
-    "underscore": "^1.9.1"
+    "tulind": "^0.8.10"
   }
 }

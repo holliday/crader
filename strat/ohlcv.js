@@ -1,6 +1,5 @@
 'use strict';
 
-root_require('core');
 const ind = root_require('lib/ind');
 root_require('lib/show');
 const table = root_require('lib/table');

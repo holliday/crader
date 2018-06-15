@@ -2,7 +2,6 @@
 
 const advice = root_require('lib/advice');
 const common = root_require('common');
-root_require('core');
 const ind = root_require('lib/ind');
 root_require('lib/show');
 const table = root_require('lib/table');

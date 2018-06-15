@@ -2,7 +2,6 @@
 
 const EventEmitter = require('events');
 
-root_require('core');
 root_require('lib/show');
 const trade = root_require('lib/trade');
 

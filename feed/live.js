@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('underscore');
 const ccxt = require('ccxt');
 
 const FeedBase = root_require('feed/base');

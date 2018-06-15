@@ -3,7 +3,6 @@
 const EventEmitter = require('events');
 
 const common = root_require('common');
-root_require('core');
 root_require('lib/show');
 
 ////////////////////

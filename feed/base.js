@@ -1,8 +1,6 @@
 'use strict';
 
 const EventEmitter = require('events');
-
-root_require('core');
 const Series = root_require('lib/series');
 
 ////////////////////
