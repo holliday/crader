@@ -1,11 +1,8 @@
 'use strict';
 
-const _ = require('underscore');
-
 const advice = root_require('lib/advice');
 const common = root_require('common');
-root_require('core');
-const ind = root_require('lib/ind'); // indicators
+const ind = root_require('lib/ind');
 root_require('lib/show');
 const table = root_require('lib/table');
 const trend = root_require('lib/trend');
@@ -35,64 +32,59 @@ strat.init = conf => {
     this.table.add_column('RSI'   , as_num  );
 };
 
-strat.print_line = (candle, rsi, color_date) => {
+strat.print_line = (candle, color_date) => {
     this.table.with('Date', color_date)
         .with(['Open', 'High', 'Low', 'Close'], comp_to(candle.close, candle.open))
-        .with('RSI', not_in(rsi, this.conf.oversold, this.conf.overbought, 
+        .with('RSI', not_in(candle.rsi, this.conf.oversold, this.conf.overbought, 
             { below: green, above: red }))
-        .print_line(candle.timestamp,
-            candle.open, candle.high, candle.low, candle.close,
-            candle.volume,
-            rsi
-        );
+        .print_line(candle);
 };
 
 strat.advise = trades => {
     var advice;
 
-    var ohlcv = ind.ohlcv(trades, this.conf.frame);
-    if(!ohlcv.length) return;
+    var series = ind.ohlcv(trades, this.conf.frame);
+    if(!series.length) return;
 
-    var rsi = ind.rsi(ohlcv.map(candle => candle.close), this.conf.rsi_period);
+    var rsi = ind.rsi(series.get('close'), this.conf.rsi_period);
     if(!rsi.length) return;
+    rsi.name = 'rsi';
+    series.merge_end(rsi);
 
-    var trade = _.last(trades);
-    var [ candle_done, candle_new ] = _.last(ohlcv, 2);
-    var [ rsi_done, rsi_new ] = _.last(rsi, 2);
+    var candle = series.end();
+    var trade = trades.end();
 
     // first time?
     if(!is_def(this.timestamp)) {
-        this.timestamp = candle_new.timestamp;
+        this.timestamp = candle.timestamp;
 
-        // print head & preroll
+        // print head & preroll candles
         this.table.with('*', white).print_head();
-
-        while(rsi.length < ohlcv.length) rsi.unshift('-');
-        ohlcv.forEach((candle, idx) =>
-            strat.print_line(candle, rsi[idx], gray)
-        );
+        series.forEach(candle => strat.print_line(candle, gray));
     }
 
     move_prev();
     erase_end();
 
     // new candle
-    if(this.timestamp !== candle_new.timestamp) {
-        this.timestamp = candle_new.timestamp;
+    if(this.timestamp !== candle.timestamp) {
+        this.timestamp = candle.timestamp;
 
-        // print final line
-        strat.print_line(candle_done, rsi_done, blue);
+        var done = series.end(-1);
+
+        // print prior candle
+        strat.print_line(done, blue);
 
         // RSI
-             if(rsi_done <= this.conf.oversold) this.trend.state = 'oversold';
-        else if(rsi_done >= this.conf.overbought) this.trend.state = 'overbought';
+             if(done.rsi <= this.conf.oversold  ) this.trend.state = 'oversold';
+        else if(done.rsi >= this.conf.overbought) this.trend.state = 'overbought';
 
         advice = this.trend.advise(trade.timestamp, this.conf.symbol, trade.price);
     }
 
-    // print current line
-    candle_new.timestamp = trade.timestamp;
-    strat.print_line(candle_new, rsi_new, bg_blue);
+    // print current candle
+    candle.timestamp = trade.timestamp;
+    strat.print_line(candle, bg_blue);
 
     return advice;
 }
