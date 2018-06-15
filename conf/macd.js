@@ -5,7 +5,7 @@ conf.strat = 'macd';
 
 // strat data
 conf.frame = '15m';
-conf.count = 38; // long_period + short_period
+conf.count = 30; // long_period + 4
 
 // MACD settings
 conf.short_period = 12;
