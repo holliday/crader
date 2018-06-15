@@ -1,21 +1,22 @@
 'use strict';
 
-const advice = root_require('lib/advice');
-const ansi   = root_require('lib/ansi');
-const as     = root_require('lib/as');
-const common = root_require('lib/common');
-const ind    = root_require('lib/ind');
-const table  = root_require('lib/table');
-const trend  = root_require('lib/trend');
+const advice = lib_require('advice');
+const ansi   = lib_require('ansi');
+const as     = lib_require('as');
+const ind    = lib_require('ind');
+const is     = lib_require('is');
+const parse  = lib_require('parse');
+const table  = lib_require('table');
+const trend  = lib_require('trend');
 
 const strat = {};
 
 strat.init = conf => {
     this.conf = conf;
 
-    conf.rsi_period = common.parse_int(conf, 'rsi_period', !null);
-    conf.oversold   = common.parse_int(conf, 'oversold', !null);
-    conf.overbought = common.parse_int(conf, 'overbought', !null);
+    conf.rsi_period = parse.int(conf, 'rsi_period', !null);
+    conf.oversold   = parse.int(conf, 'oversold', !null);
+    conf.overbought = parse.int(conf, 'overbought', !null);
 
     ////////////////////
     this.trend = new trend();
@@ -56,7 +57,7 @@ strat.advise = trades => {
     var trade = trades.end();
 
     // first time?
-    if(!is_def(this.timestamp)) {
+    if(is.undef(this.timestamp)) {
         this.timestamp = candle.timestamp;
 
         // print head & preroll candles

@@ -1,7 +1,7 @@
 'use strict';
 
-const as    = root_require('lib/as');
-const table = root_require('lib/table');
+const as    = lib_require('as');
+const table = lib_require('table');
 
 const strat = {};
 

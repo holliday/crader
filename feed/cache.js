@@ -1,9 +1,10 @@
 'use strict';
 
+const as       = lib_require('as');
+const Series   = lib_require('series');
+const sleep    = lib_require('sleep');
+const sqlite   = lib_require('sqlite');
 const FeedBase = root_require('feed/base');
-const as       = root_require('lib/as');
-const Series   = root_require('lib/series');
-const sqlite   = root_require('lib/sqlite');
 
 ////////////////////
 class CacheFeed extends FeedBase {
@@ -38,10 +39,10 @@ class CacheFeed extends FeedBase {
                 break;
             } catch(e) {
                 console.error(e.message);
-                await sleep_for(this.conf.step);
+                await sleep.for(this.conf.step);
             }
             if(!trades.length) {
-                await sleep_for(this.conf.step);
+                await sleep.for(this.conf.step);
                 break;
             }
 

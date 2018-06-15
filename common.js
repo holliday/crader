@@ -1,53 +1,15 @@
 'use strict';
 
-const fs       = require('fs');
                  require('manakin').global; // color console
 const minimist = require('minimist');
 const options  = require('minimist-options');
 const path     = require('path');
-const as       = root_require('lib/as');
-const symbol   = root_require('lib/symbol');
+const as       = lib_require('as');
+const is       = lib_require('is');
+const parse    = lib_require('parse');
+const symbol   = lib_require('symbol');
 
 const common = {};
-
-// parse generic value from conf
-common.parse = (conf, name, not_null) => {
-    var value = conf[name];
-    if(not_null && !is_def(value)) throw new Error('Unspecified ' + name);
-
-    return value;
-};
-
-function _parse_num(call, conf, name, not_null) {
-    var value = conf[name];
-    if(!is_def(value)) {
-        if(not_null) throw new Error('Unspecified ' + name);
-        else return value;
-    }
-    value = call(value);
-    if(isNaN(value)) throw new Error('Invalid ' + name);
-
-    return value;
-}
-
-// parse numeric value from conf
-common.parse_int    = (conf, name, not_null) => _parse_num(parseInt    , conf, name, not_null);
-common.parse_float  = (conf, name, not_null) => _parse_num(parseFloat  , conf, name, not_null);
-common.parse_period = (conf, name, not_null) => _parse_num(parse_period, conf, name, not_null);
-common.parse_date   = (conf, name, not_null) => _parse_num(parse_date  , conf, name, not_null);
-
-////////////////////
-common.local_require = (type, name) => {
-    if(!is_def(name)) throw new Error('Unspecified ' + type);
-
-    var path = type + '/' + name + '.js';
-    try {
-        fs.accessSync(path, fs.constants.R_OK);
-    } catch(e) {
-        throw new Error('Non-existent or inaccessible file ' + path);
-    }
-    return root_require(path);
-}
 
 ////////////////////
 function _print_banner() {
@@ -169,7 +131,7 @@ In conf-specific options, dashes (-) are converted to underscore (_).
 function _merge(conf, names) {
     names.forEach(name => {
         console.log('Opening conf:', name);
-        Object.assign(conf, common.local_require('conf', name));
+        Object.assign(conf, local_require('conf', name));
     });
 }
 
@@ -218,29 +180,29 @@ common.read_args = conf => {
 
 ////////////////////
 common.process = conf => {
-    conf.feed = common.parse(conf, 'feed', !null);
+    conf.feed = parse.any(conf, 'feed', !null);
 
-    conf.exchange_name = common.parse(conf, 'exchange', !null);
+    conf.exchange_name = parse.any(conf, 'exchange', !null);
     delete conf.exchange;
     console.log('Exchange:', as.bold(conf.exchange_name));
 
-    conf.symbol = new symbol(common.parse(conf, 'symbol', !null));
+    conf.symbol = new symbol(parse.any(conf, 'symbol', !null));
     console.log('Symbol:', conf.symbol.as_value());
 
-    conf.frame = common.parse_period(conf, 'frame', !null);
-    conf.count = common.parse_int(conf, 'count', !null);
+    conf.frame  = parse.period(conf, 'frame', !null);
+    conf.count  = parse.int(conf, 'count', !null);
     console.log('Length:', as.bold(conf.frame), 'x', as.bold(conf.count));
 
-    conf.start = common.parse_date(conf, 'start');
-    conf.end = common.parse_period(conf, 'end');
-    conf.period = common.parse_date(conf, 'end');
+    conf.start  = parse.date(conf, 'start');
+    conf.end    = parse.period(conf, 'end');
+    conf.period = parse.date(conf, 'end');
 
-    if(is_def(conf.start)) {
-        if(is_def(conf.end)) {
-            if(is_def(conf.period))
+    if(is.def(conf.start)) {
+        if(is.def(conf.end)) {
+            if(is.def(conf.period))
                 throw new Error('Invalid start/end/period combination');
 
-        } else if(is_def(conf.period)) {
+        } else if(is.def(conf.period)) {
             if(conf.period < 1000) throw new Error('Invalid period');
 
             conf.end = conf.start + conf.period;
@@ -248,8 +210,8 @@ common.process = conf => {
 
         } // else conf.end = undefined;
 
-    } else if(is_def(conf.end)) {
-        if(is_def(conf.period)) {
+    } else if(is.def(conf.end)) {
+        if(is.def(conf.period)) {
             if(conf.period < 1000) throw new Error('Invalid period');
 
             conf.start = conf.end - conf.period;
@@ -257,7 +219,7 @@ common.process = conf => {
 
         } // else conf.start = undefined;
 
-    } else if(is_def(conf.period)) {
+    } else if(is.def(conf.period)) {
         if(conf.period <= 1000) {
             conf.end = Date.now();
             conf.start = conf.end + conf.period;
@@ -273,9 +235,9 @@ common.process = conf => {
     } // else conf.start = conf.end = undefined;
 
     console.log('Interval:',
-        is_def(conf.start) ? as.bold(as.date(conf.start)) : "...",
+        is.def(conf.start) ? as.bold(as.date(conf.start)) : "...",
         'to',
-        is_def(conf.end) ? as.bold(as.date(conf.end)) : '...'
+        is.def(conf.end) ? as.bold(as.date(conf.end)) : '...'
     );
 };
 

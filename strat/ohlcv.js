@@ -1,9 +1,10 @@
 'use strict';
 
-const ansi  = root_require('lib/ansi');
-const as    = root_require('lib/as');
-const ind   = root_require('lib/ind');
-const table = root_require('lib/table');
+const ansi  = lib_require('ansi');
+const as    = lib_require('as');
+const ind   = lib_require('ind');
+const is    = lib_require('is');
+const table = lib_require('table');
 
 const strat = {};
 
@@ -35,7 +36,7 @@ strat.advise = trades => {
     var candle = series.end();
 
     // first time?
-    if(!is_def(this.timestamp)) {
+    if(is.undef(this.timestamp)) {
         this.timestamp = candle.timestamp;
 
         // print head & preroll candles

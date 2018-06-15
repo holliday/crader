@@ -1,9 +1,10 @@
 'use strict';
 require('./core');
 
-const as     = root_require('lib/as');
-const common = root_require('lib/common');
-const sqlite = root_require('lib/sqlite');
+const as     = lib_require('as');
+const is     = lib_require('is');
+const sqlite = lib_require('sqlite');
+const common = root_require('common');
 
 ////////////////////
 (async () => { try {
@@ -34,7 +35,7 @@ const sqlite = root_require('lib/sqlite');
     );
 
     // if no start, get the last timestamp from the database
-    if(!is_def(conf.start)) {
+    if(is.undef(conf.start)) {
         var trade = db.prepare(`SELECT * FROM data
             ORDER BY timestamp DESC LIMIT 1;`
         ).all();
@@ -46,7 +47,7 @@ const sqlite = root_require('lib/sqlite');
     }
 
     // set up live feed
-    var feed = await common.local_require('feed', 'live').create(conf);
+    var feed = await local_require('feed', 'live').create(conf);
     conf.step = conf.frame * conf.count;
 
     process.on('SIGINT' , () => conf.stop = true);

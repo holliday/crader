@@ -1,24 +1,25 @@
 'use strict';
 
-const advice = root_require('lib/advice');
-const ansi   = root_require('lib/ansi');
-const as     = root_require('lib/as');
-const common = root_require('lib/common');
-const ind    = root_require('lib/ind');
-const table  = root_require('lib/table');
-const trend  = root_require('lib/trend');
+const advice = lib_require('advice');
+const ansi   = lib_require('ansi');
+const as     = lib_require('as');
+const ind    = lib_require('ind');
+const is     = lib_require('is');
+const parse  = lib_require('parse');
+const table  = lib_require('table');
+const trend  = lib_require('trend');
 
 const strat = {};
 
 strat.init = conf => {
     this.conf = conf;
 
-    conf.short_period  = common.parse_int(conf, 'short_period', !null);
-    conf.long_period   = common.parse_int(conf, 'long_period', !null);
-    conf.signal_period = common.parse_int(conf, 'signal_period', !null);
+    conf.short_period  = parse.int(conf, 'short_period', !null);
+    conf.long_period   = parse.int(conf, 'long_period', !null);
+    conf.signal_period = parse.int(conf, 'signal_period', !null);
 
-    conf.min_up = common.parse_float(conf, 'min_up', !null);
-    conf.min_down = -Math.abs(common.parse_float(conf, 'min_down', !null));
+    conf.min_up = parse.float(conf, 'min_up', !null);
+    conf.min_down = -Math.abs(parse.float(conf, 'min_down', !null));
 
     ////////////////////
     this.trend = new trend();
@@ -59,7 +60,7 @@ strat.advise = trades => {
     var trade = trades.end();
 
     // first time?
-    if(!is_def(this.timestamp)) {
+    if(is.undef(this.timestamp)) {
         this.timestamp = candle.timestamp;
 
         // print head & preroll candles

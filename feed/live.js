@@ -1,9 +1,9 @@
 'use strict';
 
 const ccxt     = require('ccxt');
+const as       = lib_require('as');
+const Series   = lib_require('series');
 const FeedBase = root_require('feed/base');
-const as       = root_require('lib/as');
-const Series   = root_require('lib/series');
 
 ////////////////////
 class LiveFeed extends FeedBase {

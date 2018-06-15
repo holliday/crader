@@ -1,7 +1,8 @@
 'use strict';
 
 const EventEmitter = require('events');
-const Series       = root_require('lib/series');
+const is           = lib_require('is');
+const Series       = lib_require('series');
 
 ////////////////////
 class FeedBase extends EventEmitter {
@@ -12,7 +13,7 @@ class FeedBase extends EventEmitter {
         conf.step = 1000;
         conf.stop = false;
 
-        this.time = is_def(conf.start) ? conf.start : Date.now();
+        this.time = is.def(conf.start) ? conf.start : Date.now();
     }
 
     static async create(conf) {
@@ -37,7 +38,7 @@ class FeedBase extends EventEmitter {
         );
 
         if(trades.length) {
-            if(!is_def(this.conf.init_price))
+            if(is.undef(this.conf.init_price))
                 this.conf.init_price = trades[0].price;
             this.conf.price = trades.end().price;
         }

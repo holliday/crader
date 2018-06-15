@@ -1,9 +1,9 @@
 'use strict';
 
-const advice     = root_require('lib/advice');
-const as         = root_require('lib/as');
-const common     = root_require('lib/common');
-const trade      = root_require('lib/trade');
+const advice     = lib_require('advice');
+const as         = lib_require('as');
+const parse      = lib_require('parse');
+const trade      = lib_require('trade');
 const TraderBase = root_require('trader/base');
 
 ////////////////////
@@ -15,11 +15,11 @@ class PaperTrader extends TraderBase {
     static async create(conf) {
         console.log('Creating', as.bold('paper'), 'trader');
 
-        conf.init_asset = common.parse_float(conf, 'asset');
+        conf.init_asset = parse.float(conf, 'asset');
         if(isNaN(conf.init_asset)) conf.init_asset = 0;
         conf.asset = conf.init_asset;
 
-        conf.init_money = common.parse_float(conf, 'money');
+        conf.init_money = parse.float(conf, 'money');
         if(isNaN(conf.init_money)) conf.init_money = 0;
         conf.money = conf.init_money;
 
@@ -70,7 +70,7 @@ class PaperTrader extends TraderBase {
 
             this._add_trade(trade.sell(advice.timestamp, advice.symbol, asset, advice.price));
 
-        } else console.log('Not selling due to lack of assets');
+        } else console.warn('Not selling due to lack of assets');
 
         console.log();
     }

@@ -1,8 +1,9 @@
 'use strict';
 
 const EventEmitter = require('events');
-const as           = root_require('lib/as');
-const trade        = root_require('lib/trade');
+const as           = lib_require('as');
+const is           = lib_require('is');
+const trade        = lib_require('trade');
 
 ////////////////////
 class TraderBase extends EventEmitter {
@@ -75,11 +76,11 @@ class TraderBase extends EventEmitter {
 
         console.log(
             as.bold('Performance:'),
-            is_def(perf)
+            is.def(perf)
                 ? as.comp_to(perf, 0)(as.num(perf, '+').trim()+'%')
                 : '',
             as.gray('compared to buy+hold:'),
-            is_def(perf_hold)
+            is.def(perf_hold)
                 ? as.comp_to(perf_hold, 0)(as.num(perf_hold, '+').trim()+'%')
                 : '',
         );

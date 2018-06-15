@@ -1,7 +1,7 @@
 'use strict';
 require('./core');
 
-const common = root_require('lib/common');
+const common = root_require('common');
 
 ////////////////////
 (async () => { try {
@@ -11,9 +11,9 @@ const common = root_require('lib/common');
     console.log('Merged conf:', conf);
     common.process(conf);
 
-    var feed = await common.local_require('feed', conf.feed).create(conf);
-    var strat = await common.local_require('strat', 'base').create(conf);
-    var trader = await common.local_require('trader', conf.trader).create(conf);
+    var feed   = await local_require('feed', conf.feed).create(conf);
+    var strat  = await local_require('strat', 'base').create(conf);
+    var trader = await local_require('trader', conf.trader).create(conf);
 
     process.on('SIGINT' , () => conf.stop = true);
     process.on('SIGTERM', () => conf.stop = true);

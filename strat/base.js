@@ -1,8 +1,9 @@
 'use strict';
 
 const EventEmitter = require('events');
-const as           = root_require('lib/as');
-const common       = root_require('lib/common');
+const as           = lib_require('as');
+const is           = lib_require('is');
+const parse        = lib_require('parse');
 
 ////////////////////
 class StratBase extends EventEmitter {
@@ -12,10 +13,10 @@ class StratBase extends EventEmitter {
     }
 
     static async create(conf) {
-        conf.strat = common.parse(conf, 'strat', !null);
+        conf.strat = parse.any(conf, 'strat', !null);
 
         console.log('Creating strat:', as.bold(conf.strat));
-        conf.strat_func = common.local_require('strat', conf.strat);
+        conf.strat_func = local_require('strat', conf.strat);
 
         console.log('Initializing strat');
         conf.strat_func.init(conf);
@@ -26,7 +27,7 @@ class StratBase extends EventEmitter {
     ////////////////////
     advise(trades) {
         var advice = this.conf.strat_func.advise(trades);
-        if(is_def(advice)) {
+        if(is.def(advice)) {
             advice.print();
             this.emit('advice', advice);
         }
