@@ -51,16 +51,17 @@ strat.advise = trades => {
     var advice;
 
     var series = ind.ohlcv(trades, this.conf.frame);
-    if(!series.length) return;
+    if(series.length <=
+        this.conf.rsi_period + this.conf.stoch_period + this.conf.stoch_k
+    ) return;
 
     var rsi = ind.rsi(series.get('close'), this.conf.rsi_period);
-    if(!rsi.length) return;
 
-    var stoch = ind.stoch(rsi, rsi, rsi,
-        this.conf.stoch_period, this.conf.stoch_k, this.conf.stoch_d
+    series.merge_end(
+        ind.stoch(rsi, rsi, rsi,
+            this.conf.stoch_period, this.conf.stoch_k, this.conf.stoch_d
+        ).map(e => ({ k: e.k, d: e.d, kd: e.k - e.d }))
     );
-    if(!stoch.length) return;
-    series.merge_end(stoch).merge_end(stoch.map( e => ({ kd: e.k - e.d }) ));
 
     var candle = series.end();
     var trade = trades.end();
