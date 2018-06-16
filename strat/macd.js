@@ -48,13 +48,13 @@ strat.advise = trades => {
     var advice;
 
     var series = ind.ohlcv(trades, this.conf.frame);
-    if(!series.length) return;
+    if(series.length <= this.conf.long_period) return;
 
-    var macd = ind.macd(series.get('close'),
-        this.conf.short_period, this.conf.long_period, this.conf.signal_period
+    series.merge_end(
+        ind.macd(series.get('close'),
+            this.conf.short_period, this.conf.long_period, this.conf.signal_period
+        ).get(['histogram'])
     );
-    if(!macd.length) return;
-    series.merge_end(macd.get(['histogram']));
 
     var candle = series.end();
     var trade = trades.end();
