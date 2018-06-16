@@ -46,12 +46,11 @@ strat.advise = trades => {
     var advice;
 
     var series = ind.ohlcv(trades, this.conf.frame);
-    if(!series.length) return;
+    if(series.length <= this.conf.rsi_period) return;
 
-    var rsi = ind.rsi(series.get('close'), this.conf.rsi_period);
-    if(!rsi.length) return;
-    rsi.name = 'rsi';
-    series.merge_end(rsi);
+    series.merge_end(
+        ind.rsi(series.get('close'), this.conf.rsi_period).named('rsi')
+    );
 
     var candle = series.end();
     var trade = trades.end();
