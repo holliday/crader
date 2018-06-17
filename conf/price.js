@@ -1,7 +1,7 @@
 var conf = {};
 
 // strat name
-conf.strat = 'noop';
+conf.strat = 'price';
 
 // strat data
 //
