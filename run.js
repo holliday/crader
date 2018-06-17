@@ -28,8 +28,8 @@ const common   = root_require('common');
         if(key.ctrl) switch(key.name) {
             case 'c':
             case 'q':
-                setImmediate(process.exit);
                 conf.stop = true;
+                setTimeout(process.exit, 1000);
                 break;
 
             case 's': trader.print_summary(); break;
