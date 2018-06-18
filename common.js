@@ -194,8 +194,8 @@ common.process = conf => {
     console.log('Length:', as.bold(conf.frame), 'x', as.bold(conf.count));
 
     conf.start  = parse.date(conf, 'start');
-    conf.end    = parse.period(conf, 'end');
-    conf.period = parse.date(conf, 'end');
+    conf.end    = parse.date(conf, 'end');
+    conf.period = parse.period(conf, 'period');
 
     if(is.def(conf.start)) {
         if(is.def(conf.end)) {
