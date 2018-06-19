@@ -8,16 +8,12 @@ const Series       = lib_require('series');
 class FeedBase extends EventEmitter {
     constructor(conf) {
         super();
-        this.conf = conf;
 
+        conf.time = is.def(conf.start) ? conf.start : Date.now();
         conf.step = 1000;
         conf.stop = false;
 
-        this.time = is.def(conf.start) ? conf.start : Date.now();
-    }
-
-    static async create(conf) {
-        return new FeedBase(conf);
+        this.conf = conf;
     }
 
     ////////////////////
@@ -27,24 +23,25 @@ class FeedBase extends EventEmitter {
 
     ////////////////////
     async run() {
-        if(this.time > this.conf.end || this.conf.stop) {
+        var conf = this.conf;
+
+        if(conf.time > conf.end || conf.stop) {
             this.emit('done');
             return;
         }
 
         var trades = await this.fetch_trades(
-            this.time - this.conf.frame * this.conf.count,
-            this.time
+            conf.time - conf.frame * conf.count, conf.time
         );
 
         if(trades.length) {
-            if(is.undef(this.conf.init_price))
-                this.conf.init_price = trades[0].price;
-            this.conf.price = trades.end().price;
+            if(is.undef(conf.init_price))
+                conf.init_price = trades[0].price;
+            conf.price = trades.end().price;
         }
         this.emit('trades', trades);
 
-        this.time = Math.min(this.time + this.conf.step, Date.now());
+        conf.time = Math.min(conf.time + conf.step, Date.now());
         setImmediate(this.run.bind(this));
     }
 };
