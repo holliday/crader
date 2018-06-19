@@ -28,8 +28,6 @@ strat.print_line = (candle, color_date) => {
 };
 
 strat.advise = trades => {
-    var advice;
-
     var series = ind.ohlcv(trades, this.conf.frame);
     if(!series.length) return;
 
@@ -58,8 +56,6 @@ strat.advise = trades => {
     // print current candle
     candle.timestamp = trades.end().timestamp;
     strat.print_line(candle, as.bg_blue);
-
-    return advice;
 }
 
 ////////////////////

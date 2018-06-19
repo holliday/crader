@@ -1,6 +1,6 @@
 'use strict';
 
-const advice     = lib_require('advice');
+const Advice     = lib_require('advice');
 const as         = lib_require('as');
 const parse      = lib_require('parse');
 const trade      = lib_require('trade');
@@ -27,9 +27,9 @@ class PaperTrader extends TraderBase {
     }
 
     ////////////////////
-    accept(advice_) {
-        if(advice.is_buy(advice_)) this.buy(advice_);
-        else if(advice.is_sell(advice_)) this.sell(advice_);
+    accept(advice) {
+        if(Advice.is_buy(advice)) this.buy(advice);
+        else if(Advice.is_sell(advice)) this.sell(advice);
     }
 
     ////////////////////

@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
+const Advice       = lib_require('advice');
 const as           = lib_require('as');
 const is           = lib_require('is');
 const parse        = lib_require('parse');
@@ -28,7 +29,7 @@ class StratBase extends EventEmitter {
     ////////////////////
     advise(trades) {
         var advice = this.conf.strat.advise(trades);
-        if(is.def(advice) && is.fun(advice.print)) {
+        if(advice instanceof Advice) {
             advice.print(this.conf.symbol, this.conf.end_trade.price);
             this.emit('advice', advice);
         }

@@ -1,6 +1,6 @@
 'use strict';
 
-const advice = lib_require('advice');
+const Advice = lib_require('advice');
 const ansi   = lib_require('ansi');
 const as     = lib_require('as');
 const ind    = lib_require('ind');
@@ -20,8 +20,8 @@ strat.init = conf => {
 
     ////////////////////
     this.trend = new trend();
-    this.trend.add_state('oversold', advice.buy);
-    this.trend.add_state('overbought', advice.sell);
+    this.trend.add_state('oversold', Advice.buy);
+    this.trend.add_state('overbought', Advice.sell);
 
     ////////////////////
     this.table = new table();
