@@ -28,8 +28,8 @@ class StratBase extends EventEmitter {
     ////////////////////
     advise(trades) {
         var advice = this.conf.strat.advise(trades);
-        if(is.def(advice)) {
-            advice.print();
+        if(is.def(advice) && is.fun(advice.print)) {
+            advice.print(this.conf.symbol, this.conf.end_trade.price);
             this.emit('advice', advice);
         }
     }

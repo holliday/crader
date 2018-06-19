@@ -45,14 +45,16 @@ class PaperTrader extends TraderBase {
     ////////////////////
     buy(advice) {
         if(this.conf.money >= 0.01) {
-            var asset = this.conf.money * 0.99 / advice.price;
-            var money = asset * advice.price;
+            var trade_ = this.conf.end_trade;
+
+            var asset = this.conf.money * 0.99 / trade_.price;
+            var money = asset * trade_.price;
 
             this.conf.money -= money;
             this.conf.asset += asset;
 
-            this._add_trade(trade.buy(advice.timestamp, advice.symbol, asset, advice.price));
-            this.price_buy = advice.price;
+            this._add_trade(trade.buy(trade_.timestamp, this.conf.symbol, asset, trade_.price));
+            this.price_buy = trade_.price;
 
         } else console.warn('Not buying due to lack of currency');
 
@@ -62,13 +64,15 @@ class PaperTrader extends TraderBase {
     ////////////////////
     sell(advice) {
         if(this.conf.asset >= 0.0001) {
+            var trade_ = this.conf.end_trade;
+
             var asset = this.conf.asset * 0.99;
-            var money = asset * advice.price;
+            var money = asset * trade_.price;
 
             this.conf.money += money;
             this.conf.asset -= asset;
 
-            this._add_trade(trade.sell(advice.timestamp, advice.symbol, asset, advice.price));
+            this._add_trade(trade.sell(trade_.timestamp, this.conf.symbol, asset, trade_.price));
 
         } else console.warn('Not selling due to lack of assets');
 
