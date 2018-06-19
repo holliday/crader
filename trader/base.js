@@ -11,15 +11,11 @@ class TraderBase extends EventEmitter {
         super();
         this.conf = conf;
 
-        if(conf.init_asset < 0.0001 && conf.init_money < 0.01)
+        if(conf.start_asset < 0.0001 && conf.start_money < 0.01)
             console.log(as.bg_yellow('You are broke!'));
-        this.print_init_balance();
+        this.print_start_balance();
 
         this.trades = [];
-    }
-
-    static async create(conf) {
-        return new TraderBase(conf);
     }
 
     ////////////////////
@@ -36,9 +32,9 @@ class TraderBase extends EventEmitter {
         );
     }
 
-    print_init_balance() {
+    print_start_balance() {
         this._print_balance('Starting',
-            this.conf.init_asset, this.conf.init_money
+            this.conf.start_asset, this.conf.start_money
         );
     }
 
@@ -67,11 +63,11 @@ class TraderBase extends EventEmitter {
     print_performance() {
         var conf = this.conf;
 
-        var init_value = conf.init_asset * conf.init_price + conf.init_money;
-        var value = conf.asset * conf.price + conf.money;
-        var hold_value = conf.init_asset * conf.price + conf.init_money;
+        var start_value = conf.start_asset * conf.start_trade.price + conf.start_money;
+        var value = conf.asset * conf.end_trade.price + conf.money;
+        var hold_value = conf.start_asset * conf.end_trade.price + conf.start_money;
 
-        var perf = 100 * (value / init_value - 1);
+        var perf = 100 * (value / start_value - 1);
         var perf_hold = 100 * (value / hold_value - 1);
 
         console.log(
@@ -79,7 +75,7 @@ class TraderBase extends EventEmitter {
             is.def(perf)
                 ? as.comp_to(perf, 0)(as.num(perf, '+').trim()+'%')
                 : '',
-            as.gray('compared to buy+hold:'),
+            as.gray('compared to hold:'),
             is.def(perf_hold)
                 ? as.comp_to(perf_hold, 0)(as.num(perf_hold, '+').trim()+'%')
                 : '',
@@ -96,7 +92,7 @@ class TraderBase extends EventEmitter {
 ----=[ Summary ]=---------------------------------------------------------------
 `
         );
-        this.print_init_balance();
+        this.print_start_balance();
         this.print_trades();
         this.print_balance('Ending');
         this.print_performance();

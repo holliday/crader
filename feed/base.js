@@ -35,9 +35,9 @@ class FeedBase extends EventEmitter {
         );
 
         if(trades.length) {
-            if(is.undef(conf.init_price))
-                conf.init_price = trades[0].price;
-            conf.price = trades.end().price;
+            if(is.undef(conf.start_trade))
+                conf.start_trade = trades[0];
+            conf.end_trade = trades.end();
         }
         this.emit('trades', trades);
 

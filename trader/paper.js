@@ -15,13 +15,13 @@ class PaperTrader extends TraderBase {
     static async create(conf) {
         console.log('Creating', as.bold('paper'), 'trader');
 
-        conf.init_asset = parse.float(conf, 'asset');
-        if(isNaN(conf.init_asset)) conf.init_asset = 0;
-        conf.asset = conf.init_asset;
+        conf.start_asset = parse.float(conf, 'asset');
+        if(isNaN(conf.start_asset)) conf.start_asset = 0;
+        conf.asset = conf.start_asset;
 
-        conf.init_money = parse.float(conf, 'money');
-        if(isNaN(conf.init_money)) conf.init_money = 0;
-        conf.money = conf.init_money;
+        conf.start_money = parse.float(conf, 'money');
+        if(isNaN(conf.start_money)) conf.start_money = 0;
+        conf.money = conf.start_money;
 
         return new PaperTrader(conf);
     }
