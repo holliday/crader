@@ -91,7 +91,7 @@ strat.advise = trades => {
              if(done.kd >= this.conf.min_up  ) this.trend.state = 'up';
         else if(done.kd <= this.conf.min_down) this.trend.state = 'down';
 
-        advice = this.trend.advise(trade.timestamp, this.conf.symbol, trade.price);
+        advice = this.trend.advise();
     }
 
     // print current candle

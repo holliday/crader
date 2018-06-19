@@ -80,7 +80,7 @@ strat.advise = trades => {
              if(done.rsi <= this.conf.oversold  ) this.trend.state = 'oversold';
         else if(done.rsi >= this.conf.overbought) this.trend.state = 'overbought';
 
-        advice = this.trend.advise(trade.timestamp, this.conf.symbol, trade.price);
+        advice = this.trend.advise();
     }
 
     // print current candle
