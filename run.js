@@ -12,13 +12,17 @@ const common   = root_require('common');
     console.log('Merged conf:', conf);
     common.process(conf);
 
-    var feed   = await local_require('feed', conf.feed).create(conf);
-    var strat  = await local_require('strat', 'base').create(conf);
+    var feed = await local_require('feed', conf.feed).create(conf);
+    var strat = await local_require('strat', 'base').create(conf);
     var trader = await local_require('trader', conf.trader).create(conf);
 
-    feed.on ('trades', trades => strat.advise(trades));
-    feed.on ('done'  , ()     => trader.print_summary());
+    feed.on('trades', trades => strat.advise(trades));
     strat.on('advice', advice => trader.accept(advice));
+
+    feed.on('done', () => {
+        trader.print_summary()
+        setImmediate(process.exit);
+    });
 
     ////////////////////
     readline.emitKeypressEvents(process.stdin);
@@ -26,13 +30,9 @@ const common   = root_require('common');
 
     process.stdin.on('keypress', (ch, key) => {
         if(key.ctrl) switch(key.name) {
-            case 'c':
-            case 'q':
-                conf.stop = true;
-                setTimeout(process.exit, 1000);
-                break;
-
+            case 'c': setImmediate(process.exit); break;
             case 's': trader.print_summary(); break;
+            case 'q': conf.stop = true; break;
         }
     });
 
