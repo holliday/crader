@@ -27,8 +27,8 @@ class TraderBase extends EventEmitter {
     _print_balance(type, asset, money) {
         console.log(
             type, 'balance:',
-            this.conf.symbol.as_asset(), as.vol(asset).trim(),
-            this.conf.symbol.as_money(), as.price(money).trim()
+            as.asset(this.conf.symbol), as.vol(asset).trim(),
+            as.money(this.conf.symbol), as.price(money).trim()
         );
     }
 

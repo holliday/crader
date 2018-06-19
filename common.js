@@ -187,7 +187,7 @@ common.process = conf => {
     console.log('Exchange:', as.bold(conf.exchange_name));
 
     conf.symbol = new Symbol(parse.any(conf, 'symbol', !null));
-    console.log('Symbol:', conf.symbol.as_value());
+    console.log('Symbol:', as.symbol(conf.symbol));
 
     conf.frame  = parse.period(conf, 'frame', !null);
     conf.count  = parse.int(conf, 'count', !null);
