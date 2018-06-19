@@ -7,7 +7,7 @@ const ind    = lib_require('ind');
 const is     = lib_require('is');
 const parse  = lib_require('parse');
 const Table  = lib_require('table');
-const trend  = lib_require('trend');
+const Trend  = lib_require('trend');
 
 const strat = {};
 
@@ -22,7 +22,7 @@ strat.init = conf => {
     conf.min_down = -Math.abs(parse.float(conf, 'min_down', !null));
 
     ////////////////////
-    this.trend = new trend();
+    this.trend = new Trend();
     this.trend.add_state('up', Advice.buy);
     this.trend.add_state('down', Advice.sell);
 

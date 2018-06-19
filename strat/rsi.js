@@ -7,7 +7,7 @@ const ind    = lib_require('ind');
 const is     = lib_require('is');
 const parse  = lib_require('parse');
 const Table  = lib_require('table');
-const trend  = lib_require('trend');
+const Trend  = lib_require('trend');
 
 const strat = {};
 
@@ -19,7 +19,7 @@ strat.init = conf => {
     conf.overbought = parse.int(conf, 'overbought', !null);
 
     ////////////////////
-    this.trend = new trend();
+    this.trend = new Trend();
     this.trend.add_state('oversold', Advice.buy);
     this.trend.add_state('overbought', Advice.sell);
 
