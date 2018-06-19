@@ -13,20 +13,21 @@ class StratBase extends EventEmitter {
     }
 
     static async create(conf) {
-        conf.strat = parse.any(conf, 'strat', !null);
+        conf.strat_name = parse.any(conf, 'strat', !null);
+        delete conf.strat;
 
-        console.log('Creating strat:', as.bold(conf.strat));
-        conf.strat_func = local_require('strat', conf.strat);
+        console.log('Creating strat:', as.bold(conf.strat_name));
+        conf.strat = local_require('strat', conf.strat_name);
 
         console.log('Initializing strat');
-        conf.strat_func.init(conf);
+        conf.strat.init(conf);
 
         return new StratBase(conf);
     }
 
     ////////////////////
     advise(trades) {
-        var advice = this.conf.strat_func.advise(trades);
+        var advice = this.conf.strat.advise(trades);
         if(is.def(advice)) {
             advice.print();
             this.emit('advice', advice);
