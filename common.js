@@ -7,7 +7,7 @@ const path     = require('path');
 const as       = lib_require('as');
 const is       = lib_require('is');
 const parse    = lib_require('parse');
-const symbol   = lib_require('symbol');
+const Symbol   = lib_require('symbol');
 
 const common = {};
 
@@ -186,7 +186,7 @@ common.process = conf => {
     delete conf.exchange;
     console.log('Exchange:', as.bold(conf.exchange_name));
 
-    conf.symbol = new symbol(parse.any(conf, 'symbol', !null));
+    conf.symbol = new Symbol(parse.any(conf, 'symbol', !null));
     console.log('Symbol:', conf.symbol.as_value());
 
     conf.frame  = parse.period(conf, 'frame', !null);
