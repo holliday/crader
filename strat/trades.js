@@ -2,14 +2,14 @@
 
 const as    = lib_require('as');
 const is    = lib_require('is');
-const table = lib_require('table');
+const Table = lib_require('table');
 
 const strat = {};
 
 strat.init = conf => {
     this.conf = conf;
 
-    this.table = new table();
+    this.table = new Table();
     this.table.add_column('Date'  , as.date, as.blue);
     this.table.add_column('Price' , as.price);
     this.table.add_column('Amount', as.vol, as.yellow);

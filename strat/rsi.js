@@ -6,7 +6,7 @@ const as     = lib_require('as');
 const ind    = lib_require('ind');
 const is     = lib_require('is');
 const parse  = lib_require('parse');
-const table  = lib_require('table');
+const Table  = lib_require('table');
 const trend  = lib_require('trend');
 
 const strat = {};
@@ -24,7 +24,7 @@ strat.init = conf => {
     this.trend.add_state('overbought', Advice.sell);
 
     ////////////////////
-    this.table = new table();
+    this.table = new Table();
     this.table.add_column('Date'  , as.date );
     this.table.add_column('Open'  , as.price);
     this.table.add_column('High'  , as.price);
