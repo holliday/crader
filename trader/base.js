@@ -3,7 +3,7 @@
 const EventEmitter = require('events');
 const as           = lib_require('as');
 const is           = lib_require('is');
-const trade        = lib_require('trade');
+const Trade        = lib_require('trade');
 
 ////////////////////
 class TraderBase extends EventEmitter {
@@ -46,14 +46,14 @@ class TraderBase extends EventEmitter {
     print_trades() {
         console.log('Trades:');
 
-        var price_buy;
-        this.trades.forEach(trade_ => {
-            if(trade.is_buy(trade_)) {
-                price_buy = trade_.price;
-                trade_.print();
+        var compare;
+        this.trades.forEach(trade => {
+            if(Trade.is_buy(trade)) {
+                compare = trade;
+                trade.print(this.conf.symbol);
 
-            } else if(trade.is_sell(trade_))
-                trade_.print(price_buy);
+            } else if(Trade.is_sell(trade))
+                trade.print(this.conf.symbol, compare);
         });
 
         console.log();

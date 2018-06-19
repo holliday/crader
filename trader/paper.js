@@ -3,7 +3,7 @@
 const Advice     = lib_require('advice');
 const as         = lib_require('as');
 const parse      = lib_require('parse');
-const trade      = lib_require('trade');
+const Trade      = lib_require('trade');
 const TraderBase = root_require('trader/base');
 
 ////////////////////
@@ -37,7 +37,7 @@ class PaperTrader extends TraderBase {
         this.trades.push(trade);
 
         console.log('Executed trade:');
-        trade.print(this.price_buy);
+        trade.print(this.conf.symbol, this.compare);
 
         this.print_balance();
     }
@@ -45,16 +45,16 @@ class PaperTrader extends TraderBase {
     ////////////////////
     buy(advice) {
         if(this.conf.money >= 0.01) {
-            var trade_ = this.conf.end_trade;
+            var trade = this.conf.end_trade;
 
-            var asset = this.conf.money * 0.99 / trade_.price;
-            var money = asset * trade_.price;
+            var asset = this.conf.money * 0.99 / trade.price;
+            var money = asset * trade.price;
 
             this.conf.money -= money;
             this.conf.asset += asset;
 
-            this._add_trade(trade.buy(trade_.timestamp, this.conf.symbol, asset, trade_.price));
-            this.price_buy = trade_.price;
+            this._add_trade(Trade.buy(trade.timestamp, asset, trade.price));
+            this.compare = trade;
 
         } else console.warn('Not buying due to lack of currency');
 
@@ -64,15 +64,15 @@ class PaperTrader extends TraderBase {
     ////////////////////
     sell(advice) {
         if(this.conf.asset >= 0.0001) {
-            var trade_ = this.conf.end_trade;
+            var trade = this.conf.end_trade;
 
             var asset = this.conf.asset * 0.99;
-            var money = asset * trade_.price;
+            var money = asset * trade.price;
 
             this.conf.money += money;
             this.conf.asset -= asset;
 
-            this._add_trade(trade.sell(trade_.timestamp, this.conf.symbol, asset, trade_.price));
+            this._add_trade(Trade.sell(trade.timestamp, asset, trade.price));
 
         } else console.warn('Not selling due to lack of assets');
 
