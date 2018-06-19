@@ -7,13 +7,15 @@ const is           = lib_require('is');
 const parse        = lib_require('parse');
 
 ////////////////////
-class StratBase extends EventEmitter {
+class Advisor extends EventEmitter {
     constructor(conf) {
         super();
         this.conf = conf;
     }
 
     static async create(conf) {
+        console.log('Creating advisor');
+
         conf.strat_name = parse.any(conf, 'strat', !null);
         delete conf.strat;
 
@@ -23,11 +25,11 @@ class StratBase extends EventEmitter {
         console.log('Initializing strat');
         conf.strat.init(conf);
 
-        return new StratBase(conf);
+        return new Advisor(conf);
     }
 
     ////////////////////
-    advise(trades) {
+    receive(trades) {
         var advice = this.conf.strat.advise(trades);
         if(advice instanceof Advice) {
             advice.print(this.conf.symbol, this.conf.end_trade.price);
@@ -37,4 +39,4 @@ class StratBase extends EventEmitter {
 };
 
 ////////////////////
-module.exports = StratBase;
+module.exports = Advisor;

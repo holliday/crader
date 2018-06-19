@@ -13,11 +13,11 @@ const common   = root_require('common');
     common.process(conf);
 
     var feed = await local_require('feed', conf.feed).create(conf);
-    var strat = await local_require('strat', 'base').create(conf);
+    var advisor = await local_require('strat', 'advisor').create(conf);
     var trader = await local_require('trader', conf.trader).create(conf);
 
-    feed.on('trades', trades => strat.advise(trades));
-    strat.on('advice', advice => trader.accept(advice));
+    feed.on('trades', trades => advisor.receive(trades));
+    advisor.on('advice', advice => trader.accept(advice));
 
     feed.on('done', () => {
         trader.print_summary()
