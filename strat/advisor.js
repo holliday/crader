@@ -29,10 +29,20 @@ class Advisor extends EventEmitter {
     }
 
     ////////////////////
+    print_advice(advice) {
+        var side = Advice.is_buy(advice) ? as.bg_green('buy')
+                 : Advice.is_sell(advice) ? as.bg_red('sell') : '???';
+
+        console.log('Advice:', side, '@', as.money(this.conf.symbol),
+            as.price(this.conf.end_trade.price, '-')
+        );
+    }
+
+    ////////////////////
     receive(trades) {
         var advice = this.conf.strat.advise(trades);
         if(advice instanceof Advice) {
-            advice.print(this.conf.symbol, this.conf.end_trade.price);
+            this.print_advice(advice);
             this.emit('advice', advice);
         }
     }
