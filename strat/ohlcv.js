@@ -23,7 +23,7 @@ strat.init = conf => {
 
 strat.print_line = (candle, color_date) => {
     this.table.with('Date', color_date)
-        .with(['Open', 'High', 'Low', 'Close'], as.comp_to(candle.close, candle.open))
+        .with(['Open', 'High', 'Low', 'Close'], as.comp_to(candle.open, candle.close))
         .print_line(candle);
 };
 

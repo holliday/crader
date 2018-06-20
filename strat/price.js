@@ -29,7 +29,7 @@ strat.advise = trades => {
         ansi.erase_end();
 
         this.table.with('Price',
-            as.comp_to(trade.price, this.trade.price)
+            as.comp_to(this.trade.price, trade.price)
         ).print_line(trade);
 
         ansi.move_prev();

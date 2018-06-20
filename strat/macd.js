@@ -39,8 +39,8 @@ strat.init = conf => {
 
 strat.print_line = (candle, color_date) => {
     this.table.with('Date', color_date)
-        .with(['Open', 'High', 'Low', 'Close'], as.comp_to(candle.close, candle.open))
-        .with('Hist', as.not_in(candle.histogram, this.conf.min_down, this.conf.min_up))
+        .with(['Open', 'High', 'Low', 'Close'], as.comp_to(candle.open, candle.close))
+        .with('Hist', as.not_in(this.conf.min_down, this.conf.min_up, candle.histogram))
         .print_line(candle);
 };
 

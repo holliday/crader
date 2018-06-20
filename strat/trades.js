@@ -27,7 +27,7 @@ strat.advise = trades => {
         if(trade.timestamp <= this.trade.timestamp) return;
 
         this.table.with('Price',
-            as.comp_to(trade.price, this.trade.price)
+            as.comp_to(this.trade.price, trade.price)
         ).print_line(trade);
 
         this.trade = trade;

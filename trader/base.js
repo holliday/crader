@@ -73,11 +73,11 @@ class TraderBase extends EventEmitter {
         console.log(
             as.bold('Performance:'),
             is.def(perf)
-                ? as.comp_to(perf, 0)(as.num(perf, '+').trim()+'%')
+                ? as.comp_to_0(perf)(as.num(perf, '+').trim()+'%')
                 : '',
             as.gray('compared to hold:'),
             is.def(perf_hold)
-                ? as.comp_to(perf_hold, 0)(as.num(perf_hold, '+').trim()+'%')
+                ? as.comp_to_0(perf_hold)(as.num(perf_hold, '+').trim()+'%')
                 : '',
         );
     }
