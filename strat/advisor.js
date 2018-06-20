@@ -5,12 +5,14 @@ const Advice       = lib_require('advice');
 const as           = lib_require('as');
 const is           = lib_require('is');
 const parse        = lib_require('parse');
+const Series       = lib_require('series');
 
 ////////////////////
 class Advisor extends EventEmitter {
     constructor(conf) {
         super();
         this.conf = conf;
+        this.advices = new Series();
     }
 
     static async create(conf) {
@@ -30,10 +32,14 @@ class Advisor extends EventEmitter {
 
     ////////////////////
     print_advice(advice) {
-        var side = advice.is_buy() ? as.bg_green('buy')
-                 : advice.is_sell() ? as.bg_red('sell') : '???';
-
-        console.log('Advice:', side, '@', as.money(this.conf.symbol),
+        console.log('Advice:',
+            advice.is_buy()
+                ? as.bg_green('buy')
+                : advice.is_sell()
+                ? as.bg_red('sell')
+                : '???',
+            '@',
+            as.money(this.conf.symbol),
             as.price(this.conf.end_trade.price, '-')
         );
     }
@@ -41,7 +47,10 @@ class Advisor extends EventEmitter {
     ////////////////////
     receive(trades) {
         var advice = this.conf.strat.advise(trades);
+
         if(advice instanceof Advice) {
+            this.advices.push(advice);
+
             this.print_advice(advice);
             this.emit('advice', advice);
         }
