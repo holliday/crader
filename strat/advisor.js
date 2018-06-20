@@ -30,8 +30,8 @@ class Advisor extends EventEmitter {
 
     ////////////////////
     print_advice(advice) {
-        var side = Advice.is_buy(advice) ? as.bg_green('buy')
-                 : Advice.is_sell(advice) ? as.bg_red('sell') : '???';
+        var side = advice.is_buy() ? as.bg_green('buy')
+                 : advice.is_sell() ? as.bg_red('sell') : '???';
 
         console.log('Advice:', side, '@', as.money(this.conf.symbol),
             as.price(this.conf.end_trade.price, '-')

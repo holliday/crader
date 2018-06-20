@@ -28,8 +28,8 @@ class PaperTrader extends TraderBase {
 
     ////////////////////
     accept(advice) {
-        if(Advice.is_buy(advice)) this.buy(advice);
-        else if(Advice.is_sell(advice)) this.sell(advice);
+        if(advice.is_buy()) this.buy(advice);
+        else if(advice.is_sell()) this.sell(advice);
     }
 
     ////////////////////
