@@ -9,7 +9,7 @@ class FeedBase extends EventEmitter {
     constructor(conf) {
         super();
 
-        conf.time = is.def(conf.start) ? conf.start : Date.now();
+        global.now = is.def(conf.start) ? conf.start : Date.now();
         conf.step = 1000;
         conf.stop = false;
 
@@ -25,13 +25,13 @@ class FeedBase extends EventEmitter {
     async run() {
         var conf = this.conf;
 
-        if(conf.time > conf.end || conf.stop) {
+        if(global.now > conf.end || conf.stop) {
             this.emit('done');
             return;
         }
 
         var trades = await this.fetch_trades(
-            conf.time - conf.frame * conf.count, conf.time
+            global.now - conf.frame * conf.count, global.now
         );
 
         if(trades.length) {
@@ -41,7 +41,7 @@ class FeedBase extends EventEmitter {
         }
         this.emit('trades', trades);
 
-        conf.time = Math.min(conf.time + conf.step, Date.now());
+        global.now = Math.min(global.now + conf.step, Date.now());
         setImmediate(this.run.bind(this));
     }
 };
