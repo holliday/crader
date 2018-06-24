@@ -3,6 +3,8 @@
 const EventEmitter = require('events');
 const as           = lib_require('as');
 const is           = lib_require('is');
+const Series       = lib_require('series');
+const Table        = lib_require('table');
 const Trade        = lib_require('trade');
 
 ////////////////////
@@ -11,11 +13,19 @@ class TraderBase extends EventEmitter {
         super();
         this.conf = conf;
 
-        if(conf.start_asset < 0.0001 && conf.start_money < 0.01)
+        if(conf.start_asset < 0.0001 && conf.start_money < 0.0001)
             console.log(as.bg_yellow('You are broke!'));
         this.print_start_balance();
 
-        this.trades = [];
+        ////////////////////
+        this.table = new Table();
+        this.table.add_column('Date', as.date, as.blue);
+        this.table.add_column(this.conf.symbol.asset, as.vol, '+', as.cyan);
+        this.table.add_column('Price', as.price);
+        this.table.add_column(this.conf.symbol.money, as.price, '+', as.magenta);
+        this.table.add_column('Gain', as.price, '+');
+
+        this.trades = new Series();
     }
 
     ////////////////////
@@ -24,61 +34,110 @@ class TraderBase extends EventEmitter {
     }
 
     ////////////////////
-    _print_balance(type, asset, money) {
-        console.log(
-            type, 'balance:',
+    // balance functions
+    _print_balance(name, asset, money) {
+        console.log(name,
             as.asset(this.conf.symbol), as.vol(asset).trim(),
             as.money(this.conf.symbol), as.price(money).trim()
         );
     }
 
     print_start_balance() {
-        this._print_balance('Starting',
+        this._print_balance('Starting balance:',
             this.conf.start_asset, this.conf.start_money
         );
     }
 
-    print_balance(type = 'Current') {
-        this._print_balance(type, this.conf.asset, this.conf.money);
+    print_balance(name = 'current') {
+        this._print_balance(
+            name.replace(/^\w/, c => c.toUpperCase()) + ' balance:',
+            this.conf.asset, this.conf.money
+        );
     }
 
     ////////////////////
+    // trade functions
+    _print_trade(trade, buy_trade) {
+        var gain = '';
+        if(trade.is_sell() && is.def(buy_trade))
+            gain = trade.amount * (trade.price - buy_trade.price);
+
+        var fac = trade.is_buy() ? 1 : -1;
+        this.table
+            .with(this.conf.symbol.asset, as.comp_to_0(fac))
+            .with(this.conf.symbol.money, as.comp_to_0(-fac))
+            .with('Gain', as.not_in(-0.0001, 0.0001, gain, { equal: as.gray }))
+            .print_line(
+                trade.timestamp,
+                +fac * trade.amount,
+                trade.price,
+                -fac * trade.amount * trade.price,
+                gain,
+            );
+    }
+
+    add_trade(trade) {
+        this.trades.push(trade);
+
+        var fac = trade.is_buy() ? 1 : -1;
+        this.conf.asset += fac * trade.amount;
+        this.conf.money -= fac * trade.amount * trade.price;
+
+        console.log(as.gray('Executed trade:'));
+        this.table.print_head();
+        this._print_trade(trade, this.buy_trade);
+        this.print_balance();
+
+        if(trade.is_buy()) this.buy_trade = trade;
+    }
+
     print_trades() {
-        console.log('Trades:');
+        console.log(as.gray('Executed trades:'));
 
-        var compare;
+        this.table.print_head();
+        var buy_trade;
         this.trades.forEach(trade => {
-            if(Trade.is_buy(trade)) {
-                compare = trade;
-                trade.print(this.conf.symbol);
-
-            } else if(Trade.is_sell(trade))
-                trade.print(this.conf.symbol, compare);
+            this._print_trade(trade, buy_trade)
+            if(trade.is_buy()) buy_trade = trade;
         });
-
-        console.log();
     }
 
     ////////////////////
+    // performance functions
+    get start_value() {
+        return this.conf.start_asset * this.conf.start_trade.price + this.conf.start_money;
+    }
+
+    get value() {
+        return this.conf.asset * this.conf.end_trade.price + this.conf.money;
+    }
+
+    get hold_value() {
+        return this.conf.start_asset * this.conf.end_trade.price + this.conf.start_money;
+    }
+
     print_performance() {
-        var conf = this.conf;
+        var perf = this.value - this.start_value;
+        var perf_pct = perf / this.start_value;
+        var style = as.comp_to_0(perf);
 
-        var start_value = conf.start_asset * conf.start_trade.price + conf.start_money;
-        var value = conf.asset * conf.end_trade.price + conf.money;
-        var hold_value = conf.start_asset * conf.end_trade.price + conf.start_money;
-
-        var perf = 100 * (value / start_value - 1);
-        var perf_hold = 100 * (value / hold_value - 1);
+        var hold_perf = this.value - this.hold_value;
+        var hold_perf_pct = hold_perf / this.hold_value;
+        var hold_style = as.comp_to_0(hold_perf);
 
         console.log(
             as.bold('Performance:'),
-            is.def(perf)
-                ? as.comp_to_0(perf)(as.num(perf, '+').trim()+'%')
-                : '',
+            as.money(this.conf.symbol),
+            style(
+                as.price(perf, '+').trim(),
+                as.pct(perf_pct).trim()
+            ),
             as.gray('compared to hold:'),
-            is.def(perf_hold)
-                ? as.comp_to_0(perf_hold)(as.num(perf_hold, '+').trim()+'%')
-                : '',
+            as.money(this.conf.symbol),
+            hold_style(
+                as.price(hold_perf, '+').trim(),
+                as.pct(hold_perf_pct).trim()
+            ),
         );
     }
 
@@ -94,7 +153,9 @@ class TraderBase extends EventEmitter {
         );
         this.print_start_balance();
         this.print_trades();
-        this.print_balance('Ending');
+        console.log();
+        this.print_balance('ending');
+        console.log();
         this.print_performance();
         console.log(
 `
