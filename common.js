@@ -42,8 +42,6 @@ const opts = options({
 
     exchange: { type: 'string' , alias: 'x' },
     symbol  : { type: 'string' , alias: 'y' },
-    api_key : { type: 'string' , alias: 'api-key' },
-    secret  : { type: 'string' ,            },
 
     strat   : { type: 'string' , alias: 't' },
     frame   : { type: 'string' , alias: 'f' },
@@ -56,8 +54,6 @@ const opts = options({
     trader  : { type: 'string' ,            },
     real    : { type: 'boolean',            }, // shorthand for --trader=real
     paper   : { type: 'boolean',            }, // shorthand for --trader=paper
-    asset   : { type: 'string' , alias: 'a' },
-    money   : { type: 'string' , alias: 'm' },
 });
 
 ////////////////////
@@ -92,8 +88,14 @@ Where [option] is one of:
         --trader=<name>     Trader name
         --paper             Shorthand for --trader=paper
         --real              Shorthand for --trader=real
-    -a, --asset=<n>         Starting asset amount (paper trader)
-    -m, --money=<n>         Starting money amount (paper trader)
+
+        --max-buy=<n>       Max portion (0.1 - 0.99) of money to use, when buying an asset
+        --max-sell=<n>      Max portion (0.1 - 0.99) of asset to sell
+
+        --start-asset=<n>   Starting asset amount (paper)
+        --start-money=<n>   Starting money amount (paper)
+        --fee=<n>           Trading fee (paper)
+        --slippage=<n>      Price slippage (paper)
 
         ...                 Conf-specific options
 
