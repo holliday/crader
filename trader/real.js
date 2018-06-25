@@ -7,9 +7,6 @@ const TraderBase = root_require('trader/base');
 class RealTrader extends TraderBase {
     constructor(conf) {
         super(conf); // captures conf
-    }
-
-    static async create(conf) {
         console.log('Creating', as.bold('real'), 'trader');
 
         conf.max_buy = parse.float(conf, 'max_buy');
@@ -21,7 +18,9 @@ class RealTrader extends TraderBase {
         console.log('Trading settings:');
         console.log('  buy' , as.bold(as.pct(conf.max_buy , '-')));
         console.log('  sell', as.bold(as.pct(conf.max_sell, '-')));
+    }
 
+    static async create(conf) {
         return new RealTrader(conf);
     }
 

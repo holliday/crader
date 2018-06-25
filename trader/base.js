@@ -13,11 +13,6 @@ class TraderBase extends EventEmitter {
         super();
         this.conf = conf;
 
-        if(conf.start_asset < 0.0001 && conf.start_money < 0.0001)
-            console.log(as.bg_yellow('You are broke!'));
-        this.print_start_balance();
-
-        ////////////////////
         this.table = new Table();
         this.table.add_column('Date', as.date, as.blue);
         this.table.add_column(this.conf.symbol.asset, as.vol, '+', as.cyan);

@@ -11,11 +11,6 @@ const Series       = lib_require('series');
 class Advisor extends EventEmitter {
     constructor(conf) {
         super();
-        this.conf = conf;
-        this.advices = new Series();
-    }
-
-    static async create(conf) {
         console.log('Creating advisor');
 
         conf.strat_name = parse.any(conf, 'strat', !null);
@@ -27,6 +22,11 @@ class Advisor extends EventEmitter {
         console.log('Initializing strat');
         conf.strat.init(conf);
 
+        this.conf = conf;
+        this.advices = new Series();
+    }
+
+    static async create(conf) {
         return new Advisor(conf);
     }
 

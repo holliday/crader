@@ -9,10 +9,6 @@ const FeedBase = root_require('feed/base');
 class LiveFeed extends FeedBase {
     constructor(conf) {
         super(conf); // captures conf
-        this.trades = new Series();
-    }
-
-    static async create(conf) {
         console.log('Creating', as.bold('live'), 'feed');
 
         if(!ccxt.exchanges.includes(conf.exchange_name))
@@ -26,14 +22,20 @@ class LiveFeed extends FeedBase {
         conf.exchange.enableRateLimit = true;
         conf.step = conf.exchange.rateLimit;
 
-        if(!conf.exchange.hasFetchTrades)
+        if(!conf.exchange.has.fetchTrades)
             throw new Error('Exchange does not provide trade data');
 
-        await conf.exchange.loadMarkets();
-        if(!conf.exchange.symbols.includes(conf.symbol.value))
-            throw new Error('Invalid or unsupported symbol');
+        this.trades = new Series();
+    }
 
-        return new LiveFeed(conf);
+    static async create(conf) {
+        var feed = new LiveFeed(conf);
+
+        await conf.exchange.loadMarkets();
+        if(!conf.exchange.symbols.includes(conf.symbol.value)) {
+            throw new Error('Invalid or unsupported symbol');
+        }
+        return feed;
     }
 
     ////////////////////

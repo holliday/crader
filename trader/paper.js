@@ -10,9 +10,6 @@ const TraderBase = root_require('trader/base');
 class PaperTrader extends TraderBase {
     constructor(conf) {
         super(conf); // captures conf
-    }
-
-    static async create(conf) {
         console.log('Creating', as.bold('paper'), 'trader');
 
         conf.start_asset = parse.float(conf, 'start_asset');
@@ -41,6 +38,12 @@ class PaperTrader extends TraderBase {
         console.log('  fee'     , as.bold(as.pct(conf.fee     , '-')));
         console.log('  slippage', as.bold(as.pct(conf.slippage, '-')));
 
+        if(conf.start_asset < 0.0001 && conf.start_money < 0.0001)
+            console.log(as.bg_yellow('You are broke!'));
+        this.print_start_balance();
+    }
+
+    static async create(conf) {
         return new PaperTrader(conf);
     }
 
