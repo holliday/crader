@@ -15,13 +15,31 @@ class PaperTrader extends TraderBase {
     static async create(conf) {
         console.log('Creating', as.bold('paper'), 'trader');
 
-        conf.start_asset = parse.float(conf, 'asset');
+        conf.start_asset = parse.float(conf, 'start_asset');
         if(isNaN(conf.start_asset)) conf.start_asset = 0;
         conf.asset = conf.start_asset;
 
-        conf.start_money = parse.float(conf, 'money');
+        conf.start_money = parse.float(conf, 'start_money');
         if(isNaN(conf.start_money)) conf.start_money = 0;
         conf.money = conf.start_money;
+
+        conf.max_buy = parse.float(conf, 'max_buy');
+        if(isNaN(conf.max_buy)) conf.max_buy = 0.99;
+
+        conf.max_sell = parse.float(conf, 'max_sell');
+        if(isNaN(conf.max_sell)) conf.max_sell = 0.99;
+
+        conf.fee = parse.float(conf, 'fee');
+        if(isNaN(conf.fee)) conf.fee = 0;
+
+        conf.slippage = parse.float(conf, 'slippage');
+        if(isNaN(conf.slippage)) conf.slippage = 0;
+
+        console.log('Paper trading settings:');
+        console.log('  buy'     , as.bold(as.pct(conf.max_buy , '-')));
+        console.log('  sell'    , as.bold(as.pct(conf.max_sell, '-')));
+        console.log('  fee'     , as.bold(as.pct(conf.fee     , '-')));
+        console.log('  slippage', as.bold(as.pct(conf.slippage, '-')));
 
         return new PaperTrader(conf);
     }
@@ -34,10 +52,15 @@ class PaperTrader extends TraderBase {
 
     ////////////////////
     buy(advice) {
-        if(this.conf.money >= 0.01) {
-            var trade = this.conf.end_trade;
-            var asset = this.conf.money * 0.99 / trade.price;
-            this.add_trade(Trade.buy(trade.timestamp, asset, trade.price));
+        if(this.conf.money >= 0.0001) {
+            var price = this.conf.end_trade.price * (1 + this.conf.slippage);
+            var money = this.conf.money * this.conf.max_buy;
+            var asset = money / price;
+
+            this.conf.money -= money * (1 + this.conf.fee);
+            this.conf.asset += asset;
+
+            this.add_trade(Trade.buy(this.conf.end_trade.timestamp, asset, price));
 
         } else console.warn('Not buying due to lack of currency');
 
@@ -47,10 +70,14 @@ class PaperTrader extends TraderBase {
     ////////////////////
     sell(advice) {
         if(this.conf.asset >= 0.0001) {
-            var trade = this.conf.end_trade;
-            var asset = this.conf.asset * 0.99;
+            var price = this.conf.end_trade.price * (1 - this.conf.slippage);
+            var asset = this.conf.asset * this.conf.max_sell;
+            var money = asset * price;
 
-            this.add_trade(Trade.sell(trade.timestamp, asset, trade.price));
+            this.conf.asset -= asset;
+            this.conf.money += money * (1 - this.conf.fee);
+
+            this.add_trade(Trade.sell(this.conf.end_trade.timestamp, asset, price));
 
         } else console.warn('Not selling due to lack of assets');
 

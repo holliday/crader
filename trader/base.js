@@ -79,10 +79,6 @@ class TraderBase extends EventEmitter {
     add_trade(trade) {
         this.trades.push(trade);
 
-        var fac = trade.is_buy() ? 1 : -1;
-        this.conf.asset += fac * trade.amount;
-        this.conf.money -= fac * trade.amount * trade.price;
-
         console.log(as.gray('Executed trade:'));
         this.table.print_head();
         this._print_trade(trade, this.buy_trade);
