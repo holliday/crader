@@ -25,13 +25,12 @@ const common = root_require('common');
 
     db.exec(`CREATE TABLE IF NOT EXISTS data (
         timestamp INTEGER PRIMARY KEY,
-        date TEXT,
         price REAL NOT NULL,
         amount REAL NOT NULL
     ) WITHOUT ROWID;`);
 
     var db_insert = db.prepare(`INSERT OR REPLACE INTO data
-        VALUES (:timestamp, :date, :price, :amount);`
+        VALUES (:timestamp, :price, :amount);`
     );
 
     // if no start, get the last timestamp from the database
@@ -59,10 +58,7 @@ const common = root_require('common');
 
         db.begin();
         try {
-            trades.forEach(trade => {
-                Object.assign(trade, { date: as.date(trade.timestamp) });
-                db_insert.run(trade);
-            });
+            trades.forEach(trade => db_insert.run(trade));
 
             console.log('Cached', as.int(trades.length), 'trades:',
                 as.blue(as.date(trades[0].timestamp)),
