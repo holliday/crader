@@ -2,6 +2,7 @@
 
 const Advice     = lib_require('advice');
 const as         = lib_require('as');
+const is         = lib_require('is');
 const parse      = lib_require('parse');
 const Trade      = lib_require('trade');
 const TraderBase = root_require('trader/base');
@@ -49,41 +50,104 @@ class PaperTrader extends TraderBase {
 
     ////////////////////
     accept(advice) {
-        if(advice.is_buy()) this.buy(advice);
-        else if(advice.is_sell()) this.sell(advice);
+        if(advice.is_buy()) {
+            if(this.conf.money < 0.0001) {
+                console.warn('Not buying due to lack of currency');
+                console.log();
+            } else this.buy(advice);
+
+        } else if(advice.is_sell()) {
+            if(this.conf.asset < 0.0001) {
+                console.warn('Not selling due to lack of assets');
+                console.log();
+            } else this.sell(advice);
+        }
     }
 
     ////////////////////
     buy(advice) {
-        if(this.conf.money >= 0.0001) {
-            var price = this.conf.end_trade.price * (1 + this.conf.slippage);
-            var money = this.conf.money * this.conf.max_buy;
+        if(global.live
+            && is.def(this.conf.exchange)
+            && is.def(this.conf.exchange.has.fetchOrderBook)
+        ) this.buy_live(advice);
+
+        else this.buy_cache(advice);
+    }
+
+    sell(advice) {
+        if(global.live
+            && is.def(this.conf.exchange)
+            && is.def(this.conf.exchange.has.fetchOrderBook)
+        ) this.sell_live(advice);
+
+        else this.sell_cache(advice);
+    }
+
+    ////////////////////
+    buy_cache(advice) {
+        var price = this.conf.end_trade.price * (1 + this.conf.slippage);
+        var money = this.conf.money * this.conf.max_buy;
+        var asset = money / price;
+
+        this.conf.money -= money * (1 + this.conf.fee);
+        this.conf.asset += asset;
+
+        this.add_trade(Trade.buy(global.now, asset, price));
+        console.log();
+    }
+
+    async buy_live(advice) {
+        var asks = (await this.conf.exchange.fetchOrderBook(
+            this.conf.symbol.value
+        )).asks;
+        var total = this.conf.money * this.conf.max_buy;
+
+        for(var [ price, amount ] of asks) {
+            if(total < 0.0001) break;
+
+            var money = Math.min(price * amount, total);
             var asset = money / price;
 
             this.conf.money -= money * (1 + this.conf.fee);
             this.conf.asset += asset;
+            total -= money;
 
-            this.add_trade(Trade.buy(this.conf.end_trade.timestamp, asset, price));
-
-        } else console.warn('Not buying due to lack of currency');
-
+            this.add_trade(Trade.buy(global.now, asset, price));
+        }
         console.log();
     }
 
     ////////////////////
-    sell(advice) {
-        if(this.conf.asset >= 0.0001) {
-            var price = this.conf.end_trade.price * (1 - this.conf.slippage);
-            var asset = this.conf.asset * this.conf.max_sell;
+    sell_cache(advice) {
+        var price = this.conf.end_trade.price * (1 - this.conf.slippage);
+        var asset = this.conf.asset * this.conf.max_sell;
+        var money = asset * price;
+
+        this.conf.asset -= asset;
+        this.conf.money += money * (1 - this.conf.fee);
+
+        this.add_trade(Trade.sell(global.now, asset, price));
+        console.log();
+    }
+
+    async sell_live(advice) {
+        var bids = (await this.conf.exchange.fetchOrderBook(
+            this.conf.symbol.value
+        )).bids;
+        var total = this.conf.asset * this.conf.max_sell;
+
+        for(var [ price, amount ] of bids) {
+            if(total < 0.0001) break;
+
+            var asset = Math.min(amount, total);
             var money = asset * price;
 
             this.conf.asset -= asset;
             this.conf.money += money * (1 - this.conf.fee);
+            total -= asset;
 
-            this.add_trade(Trade.sell(this.conf.end_trade.timestamp, asset, price));
-
-        } else console.warn('Not selling due to lack of assets');
-
+            this.add_trade(Trade.sell(global.now, asset, price));
+        }
         console.log();
     }
 }
