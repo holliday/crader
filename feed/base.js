@@ -5,11 +5,27 @@ const is           = lib_require('is');
 const Series       = lib_require('series');
 
 ////////////////////
+function _set_now(value) {
+    var time = Date.now();
+
+    if(global.live)
+        global.now = time;
+
+    else if(value < time)
+        global.now = value;
+
+    else {
+        global.now = time;
+        global.live = true;
+    }
+}
+
+////////////////////
 class FeedBase extends EventEmitter {
     constructor(conf) {
         super();
 
-        global.now = is.def(conf.start) ? conf.start : Date.now();
+        _set_now(conf.start);
         conf.step = 1000;
         conf.stop = false;
 
@@ -41,7 +57,7 @@ class FeedBase extends EventEmitter {
         }
         this.emit('trades', trades);
 
-        global.now = Math.min(global.now + conf.step, Date.now());
+        _set_now(global.now + conf.step);
         setImmediate(this.run.bind(this));
     }
 };
