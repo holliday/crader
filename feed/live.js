@@ -20,7 +20,6 @@ class LiveFeed extends FeedBase {
         conf.exchange.secret = conf.secret;
 
         conf.exchange.enableRateLimit = true;
-        conf.step = conf.exchange.rateLimit;
 
         if(!conf.exchange.has.fetchTrades)
             throw new Error('Exchange does not provide trade data');
