@@ -1,8 +1,9 @@
 var conf = {};
 
-conf.feed = 'cache';
-
 conf.exchange = '';
 conf.symbol = '';
+
+conf.api_key = '';
+conf.secret = '';
 
 module.exports = conf;
