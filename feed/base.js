@@ -8,15 +8,16 @@ const Series       = lib_require('series');
 function _set_now(value) {
     var time = Date.now();
 
-    if(global.live)
+    if(global.live) {
         global.now = time;
+        global.live_once = false;
 
-    else if(value < time)
+    } else if(value < time)
         global.now = value;
 
     else {
         global.now = time;
-        global.live = true;
+        global.live = global.live_once = true;
     }
 }
 
