@@ -15,26 +15,28 @@ strat.init = conf => {
     this.table.add_column('Price' , as.price);
     this.table.add_column('Amount', as.vol, as.yellow);
 
-    this.trade = {};
+    this.prev_trade = {};
 };
 
 strat.advise = trades => {
-    if(trades.length === 0) return;
+    if(trades.length > 0
+        && trades.end().timestamp !== this.prev_trade.timestamp) {
+    //
+        var end_trade = trades.end();
 
-    if(is.undef(this.trade.timestamp))
-        this.table.with('*', as.white).print_head();
-
-    var trade = trades.end();
-    if(trade.timestamp !== this.trade.timestamp) {
-        ansi.erase_end();
+        if(is.undef(this.prev_trade.timestamp))
+            this.table.with('*', as.white).print_head();
+        else ansi.move_prev();
 
         this.table.with('Price',
-            as.comp_to(this.trade.price, trade.price)
-        ).print_line(trade);
+            as.comp_to(this.prev_trade.price, end_trade.price)
+        ).print_line(end_trade);
 
-        ansi.move_prev();
-        this.trade = trade;
+        this.prev_trade = end_trade;
     }
+
+    console.log(as.now());
+    ansi.move_prev();
 }
 
 module.exports = strat;
