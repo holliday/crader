@@ -39,10 +39,10 @@ class CacheFeed extends FeedBase {
                 break;
             } catch(e) {
                 console.error(e.message);
-                await sleep.for(this.conf.step);
+                await sleep.for(this.conf.step / 10);
             }
             if(!trades.length) {
-                await sleep.for(this.conf.step);
+                await sleep.for(this.conf.step / 10);
                 break;
             }
 
