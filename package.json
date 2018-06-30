@@ -10,8 +10,8 @@
   "author": "Doc Holliday <doc (dot) holliday (at) usa (dot) com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "better-sqlite3": "^4.1.1",
-    "ccxt": "^1.14.163",
+    "better-sqlite3": "^4.1.4",
+    "ccxt": "^1.14.301",
     "chalk": "^2.4.1",
     "manakin": "^0.5.1",
     "minimist": "^1.2.0",
