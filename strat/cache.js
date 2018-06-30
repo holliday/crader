@@ -43,22 +43,25 @@ strat.init = conf => {
 };
 
 strat.advise = trades => {
-    if(!trades.length) return;
+    if(trades.length) {
+        this.conf.db.begin();
+        try {
+            trades.forEach(trade => this.conf.db_insert.run(trade));
 
-    this.conf.db.begin();
-    try {
-        trades.forEach(trade => this.conf.db_insert.run(trade));
+            console.log('Cached', as.int(trades.length), 'trades:',
+                as.blue(as.date(trades[0].timestamp)),
+                '-',
+                as.blue(as.date(trades.end().timestamp)),
+            );
 
-        console.log('Cached', as.int(trades.length), 'trades:',
-            as.blue(as.date(trades[0].timestamp)),
-            '-',
-            as.blue(as.date(trades.end().timestamp)),
-        );
-
-        this.conf.db.commit();
-    } finally {
-        if(this.conf.db.inTransaction) this.conf.db.rollback();
+            this.conf.db.commit();
+        } finally {
+            if(this.conf.db.inTransaction) this.conf.db.rollback();
+        }
     }
+
+    console.log(as.now());
+    ansi.move_prev();
 };
 
 ////////////////////
