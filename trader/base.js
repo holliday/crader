@@ -23,6 +23,10 @@ class TraderBase extends EventEmitter {
         this.trades = new Series();
     }
 
+    static async create(conf) {
+        return new TraderBase(conf);
+    }
+
     ////////////////////
     accept(advice) {
         // do nothing
