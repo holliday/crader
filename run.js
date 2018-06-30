@@ -12,8 +12,8 @@ const common   = root_require('common');
     console.log('Merged conf:', conf);
     common.process(conf);
 
-    var feed = await local_require('feed', conf.feed).create(conf);
     var advisor = await local_require('strat', 'advisor').create(conf);
+    var feed = await local_require('feed', conf.feed).create(conf);
     var trader = await local_require('trader', conf.trader).create(conf);
 
     feed.on('trades', trades => advisor.receive(trades));
