@@ -182,8 +182,6 @@ common.read_args = conf => {
 
 ////////////////////
 common.process = conf => {
-    conf.feed = parse.any(conf, 'feed', !null);
-
     conf.exchange_name = parse.any(conf, 'exchange', !null);
     delete conf.exchange;
     console.log('Exchange:', as.bold(conf.exchange_name));
