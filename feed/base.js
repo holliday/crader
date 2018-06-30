@@ -26,7 +26,8 @@ class FeedBase extends EventEmitter {
         super();
 
         _set_now(conf.start);
-        conf.step = 1000;
+        // default to 1 second, if not set
+        if(is.undef(conf.step)) conf.step = 1000;
         conf.stop = false;
 
         this.conf = conf;
