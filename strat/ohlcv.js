@@ -21,41 +21,45 @@ strat.init = conf => {
     this.table.add_column('Volume', as.vol, as.yellow);
 };
 
-strat.print_line = (candle, color_date) => {
-    this.table.with('Date', color_date)
+strat.print_line = (candle, color) => {
+    this.table.with('Date', color)
         .with(['Open', 'High', 'Low', 'Close'], as.comp_to(candle.open, candle.close))
         .print_line(candle);
 };
 
 strat.advise = trades => {
-    var series = ind.ohlcv(trades, this.conf.frame);
-    if(!series.length) return;
+    if(trades.length > 0
+        && trades.end().timestamp !== this.prev_trade) {
+    //
+        this.prev_trade = trades.end().timestamp;
 
-    var candle = series.end();
+        var series = ind.ohlcv(trades, this.conf.frame);
+        var candle = series.end();
 
-    // first time?
-    if(is.undef(this.timestamp)) {
-        this.timestamp = candle.timestamp;
+        ansi.move_prev();
+        ansi.erase_end();
 
-        // print head & preroll candles
-        this.table.with('*', as.white).print_head();
-        series.forEach(candle => strat.print_line(candle, as.gray));
+        // new candle?
+        if(candle.timestamp !== this.prev_candle) {
+
+            // first one?
+            if(is.undef(this.prev_candle)) {
+                this.table.with('*', as.white).print_head();
+                series.forEach(candle => strat.print_line(candle, as.gray));
+            }
+            this.prev_candle = candle.timestamp;
+
+            // reprint prior candle
+            if(series.length > 1) strat.print_line(series.end(-1), as.blue);
+        }
+
+        // print current candle
+        candle.timestamp = trades.end().timestamp;
+        strat.print_line(candle, as.bright_blue);
     }
 
+    console.log(as.now());
     ansi.move_prev();
-    ansi.erase_end();
-
-    // new candle
-    if(this.timestamp !== candle.timestamp) {
-        this.timestamp = candle.timestamp;
-
-        // print prior candle
-        strat.print_line(series.end(-1), as.blue);
-    }
-
-    // print current candle
-    candle.timestamp = trades.end().timestamp;
-    strat.print_line(candle, as.bg_blue);
 }
 
 ////////////////////
