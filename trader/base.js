@@ -82,6 +82,7 @@ class TraderBase extends EventEmitter {
         this.table.print_head();
         this._print_trade(trade, this.buy_trade);
         this.print_balance();
+        console.log();
 
         if(trade.is_buy()) this.buy_trade = trade;
     }

@@ -93,7 +93,6 @@ class PaperTrader extends TraderBase {
         this.conf.asset += asset;
 
         this.add_trade(Trade.buy(global.now, asset, price));
-        console.log();
     }
 
     async buy_live(advice) {
@@ -114,7 +113,6 @@ class PaperTrader extends TraderBase {
 
             this.add_trade(Trade.buy(global.now, asset, price));
         }
-        console.log();
     }
 
     ////////////////////
@@ -127,7 +125,6 @@ class PaperTrader extends TraderBase {
         this.conf.money += money * (1 - this.conf.fee);
 
         this.add_trade(Trade.sell(global.now, asset, price));
-        console.log();
     }
 
     async sell_live(advice) {
@@ -148,7 +145,6 @@ class PaperTrader extends TraderBase {
 
             this.add_trade(Trade.sell(global.now, asset, price));
         }
-        console.log();
     }
 }
 
