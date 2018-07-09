@@ -12,7 +12,7 @@ conf.short_period = 12;
 conf.long_period = 26;
 conf.signal_period = 9;
 
-conf.min_up = 0.05;
-conf.min_down = 0.03;
+conf.min_up = 0.01;
+conf.min_down = 0.01;
 
 module.exports = conf;
