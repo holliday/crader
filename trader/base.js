@@ -120,8 +120,7 @@ class TraderBase extends EventEmitter {
         var hold_perf_pct = hold_perf / this.hold_value;
         var hold_style = as.comp_to_0(hold_perf);
 
-        console.log(
-            as.bold('Performance:'),
+        console.log(as.bold('Performance:'),
             as.money(this.conf.symbol),
             style(
                 as.price(perf, '+').trim(),
@@ -142,7 +141,6 @@ class TraderBase extends EventEmitter {
 
         console.log(
 `
-
 ----=[ Summary ]=---------------------------------------------------------------
 `
         );
