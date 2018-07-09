@@ -34,57 +34,65 @@ strat.init = conf => {
     this.table.add_column('RSI'   , as.num  );
 };
 
-strat.print_line = (candle, color_date) => {
-    this.table.with('Date', color_date)
+strat.print_line = (candle, color) => {
+    this.table.with('Date', color)
         .with(['Open', 'High', 'Low', 'Close'], as.comp_to(candle.open, candle.close))
-        .with('RSI', as.inot_in(this.conf.oversold, this.conf.overbought, candle.rsi))
+        .with('RSI', as.inot_in(this.conf.oversold,
+            this.conf.overbought, candle.rsi, { equal: as.gray }))
         .print_line(candle);
 };
 
 strat.advise = trades => {
     var advice;
 
-    var series = ind.ohlcv(trades, this.conf.frame);
-    if(series.length <= this.conf.rsi_period) return;
+    if(trades.length > 0
+        && trades.end().timestamp !== this.prev_trade) {
+    //
+        this.prev_trade = trades.end().timestamp;
 
-    series.merge_end(
-        ind.rsi(series.get('close'), this.conf.rsi_period).named('rsi')
-    );
+        var series = ind.ohlcv(trades, this.conf.frame);
+        if(series.length >= this.conf.rsi_period) {
 
-    var candle = series.end();
-    var trade = trades.end();
+            series.merge_end(
+                ind.rsi(series.get('close'), this.conf.rsi_period).named('rsi')
+            );
+            var candle = series.end();
 
-    // first time?
-    if(is.undef(this.timestamp)) {
-        this.timestamp = candle.timestamp;
+            // first candle?
+            if(is.undef(this.prev_candle)) {
+                this.prev_candle = candle.timestamp;
 
-        // print head & preroll candles
-        this.table.with('*', as.white).print_head();
-        series.forEach(candle => strat.print_line(candle, as.gray));
+                this.table.with('*', as.white).print_head();
+                series.forEach(candle => strat.print_line(candle, as.gray));
+            }
+            ansi.move_prev();
+
+            // new candle?
+            if(candle.timestamp !== this.prev_candle) {
+                this.prev_candle = candle.timestamp;
+
+                if(series.length > 1) {
+                    var done = series.end(-1);
+
+                    // reprint prior candle
+                    strat.print_line(done, as.blue);
+
+                    // RSI
+                         if(done.rsi <= this.conf.oversold  ) this.trend.state = 'oversold';
+                    else if(done.rsi >= this.conf.overbought) this.trend.state = 'overbought';
+
+                    advice = this.trend.advise();
+                }
+            }
+
+            // print current candle
+            candle.timestamp = trades.end().timestamp;
+            strat.print_line(candle, as.bright_blue);
+        }
     }
 
+    console.log(as.now());
     ansi.move_prev();
-    ansi.erase_end();
-
-    // new candle
-    if(this.timestamp !== candle.timestamp) {
-        this.timestamp = candle.timestamp;
-
-        var done = series.end(-1);
-
-        // print prior candle
-        strat.print_line(done, as.blue);
-
-        // RSI
-             if(done.rsi <= this.conf.oversold  ) this.trend.state = 'oversold';
-        else if(done.rsi >= this.conf.overbought) this.trend.state = 'overbought';
-
-        advice = this.trend.advise();
-    }
-
-    // print current candle
-    candle.timestamp = trade.timestamp;
-    strat.print_line(candle, as.bg_blue);
 
     return advice;
 }
