@@ -36,17 +36,17 @@ strat.advise = trades => {
         var series = ind.ohlcv(trades, this.conf.frame);
         var candle = series.end();
 
+        // first candle?
+        if(is.undef(this.prev_candle)) {
+            this.prev_candle = candle.timestamp;
+
+            this.table.with('*', as.white).print_head();
+            series.forEach(candle => strat.print_line(candle, as.gray));
+        }
         ansi.move_prev();
-        ansi.erase_end();
 
         // new candle?
         if(candle.timestamp !== this.prev_candle) {
-
-            // first one?
-            if(is.undef(this.prev_candle)) {
-                this.table.with('*', as.white).print_head();
-                series.forEach(candle => strat.print_line(candle, as.gray));
-            }
             this.prev_candle = candle.timestamp;
 
             // reprint prior candle
