@@ -15,7 +15,7 @@ conf.stoch_period = 14;
 conf.stoch_k = 3; // sma period
 conf.stoch_d = 3; // sma period
 
-conf.min_up = 4;
+conf.min_up = 1;
 conf.min_down = 1;
 
 module.exports = conf;
