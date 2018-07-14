@@ -11,7 +11,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "better-sqlite3": "^4.1.4",
-    "ccxt": "^1.14.301",
+    "ccxt": "^1.16.15",
     "chalk": "^2.4.1",
     "manakin": "^0.5.1",
     "minimist": "^1.2.0",
